@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Vehicle Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        #loginPage, #adminPage {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        #loginPage:hover, #adminPage:hover {
+            transform: scale(1.02);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label, input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            font-size: 1rem;
+        }
+
+        input[type="text"], input[type="password"], button {
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #4CAF50;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #adminPage {
+            max-width: 90%;
+            max-height: 90vh;
+            padding: 20px;
+        }
+
+        #userTableContainer {
+            overflow-x: auto;
+            margin-top: 20px;
+            max-height: 60vh;
+        }
+
+        #searchContainer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 50%;
+            outline: none;
+            transition: width 0.4s ease;
+        }
+
+        #searchInput:focus {
+            width: 60%;
+            border-color: #4CAF50;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            #adminPage {
+                width: 90%;
+                max-height: 90vh;
+            }
+
+            #searchInput {
+                width: 70%;
+            }
+        }
+        .logout,.print{
+            width: 80px;
+        }
+        .logout{
+            position: relative;
+            left: 20px;
+        }
+        #btns{
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loginPage">
+        <h1>Admin Login</h1>
+        <label for="userID">User ID:</label>
+        <input type="text" id="userID" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" required>
+        <label for="captcha">Captcha: <span id="captcha"></span></label>
+        <input type="text" id="captchaInput" placeholder="Enter captcha" required>
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div id="adminPage" style="display: none;">
+        <h1>Welcome, Admin</h1>
+        <h2>All Users</h2>
+        <div id="searchContainer">
+            <input type="text" id="searchInput" placeholder="Search for entries..." onkeyup="searchVehicle()">
+        </div>
+        <div id="btns">
+             <button onclick="printPage()" class="print">Print</button>
+        <button onclick="logout()" class="logout">Logout</button>
+        </div>
+       
+        <div id="userTableContainer">
+            <!-- Vehicle Data Table will be populated here -->
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script src="data.js"></script>
+    <script>
+   function generateCaptcha() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let captcha = "";
+            for (let i = 0; i < 5; i++) {
+                captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById("captcha").innerText = captcha;
+        }
+
+        function login() {
+            const userID = document.getElementById("userID").value;
+            const password = document.getElementById("password").value;
+            const captcha = document.getElementById("captcha").innerText;
+            const captchaInput = document.getElementById("captchaInput").value;
+
+            if (userID === "watchmyride" && password === "ideathon@2024" && captcha === captchaInput) {
+                document.getElementById("loginPage").style.display = "none";
+                document.getElementById("adminPage").style.display = "block";
+                displayVehicleData();
+            } else {
+                alert("Invalid credentials or captcha. Please try again.");
+                generateCaptcha();
+            }
+        }
+
+        function displayVehicleData(filteredData = vehicleData) {
+            const tableContainer = document.getElementById("userTableContainer");
+            let tableHTML = `
+                <table>
+                    <tr>
+                        <th>Vehicle ID</th>
+                        <th>Model</th>
+                        <th>Vehicle No</th>
+                        <th>Driver Name</th>
+                        <th>Owner Name</th>
+                        <th>Driver Mobile</th>
+                    </tr>`;
+
+            filteredData.forEach(vehicle => {
+                tableHTML += `
+                    <tr>
+                        <td>${vehicle.vehicleID}</td>
+                        <td>${vehicle.model}</td>
+                        <td>${vehicle.vehicleNo}</td>
+                        <td>${vehicle.driverName}</td>
+                        <td>${vehicle.ownerName}</td>
+                        <td>${vehicle.driverMobile}</td>
+                    </tr>`;
+            });
+
+            tableHTML += `</table>`;
+            tableContainer.innerHTML = tableHTML;
+        }
+
+        function printPage() {
+            window.print();
+        }
+
+        function logout() {
+            document.getElementById("adminPage").style.display = "none";
+            document.getElementById("loginPage").style.display = "block";
+            alert("Logout successful!");
+            document.getElementById("userID").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("captchaInput").value = "";
+            generateCaptcha();
+        }
+
+        function searchVehicle() {
+            const query = document.getElementById("searchInput").value.toLowerCase();
+            const filteredData = vehicleData.filter(vehicle =>
+                Object.values(vehicle).some(value =>
+                    value.toString().toLowerCase().includes(query)
+                )
+            );
+            displayVehicleData(filteredData);
+        }
+
+        // Generate initial captcha on page load
+        generateCaptcha();
+    </script>
+
+</body>
+</html>

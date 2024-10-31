@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Info Verification</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        /* Container */
+        .container {
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            padding: 25px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .form-section, .vehicle-details {
+            margin: 20px 0;
+            display: none;
+        }
+
+        /* Input and Button Styling */
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .action-btn {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .action-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .refresh-btn {
+            border: none;
+            color: #007bff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 8px;
+            background-color: white;
+        }
+
+        .captcha-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 12px 0;
+        }
+
+        .captcha-section span {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #555;
+            padding: 8px 12px;
+            background-color: #e0e7ff;
+            border-radius: 4px;
+            letter-spacing: 3px;
+        }
+
+        /* Card Style for Vehicle Details */
+        .vehicle-card {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            margin-top: 10px;
+        }
+
+        .vehicle-card div {
+            margin-bottom: 8px;
+        }
+
+        .vehicle-card div span {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 500px) {
+            .container {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Vehicle Information Verification</h1>
+
+        <!-- Vehicle ID and Captcha Form -->
+        <div id="vehicleIDForm" class="form-section">
+            <input type="text" id="vehicleIDInput" placeholder="Enter Vehicle ID" required>
+            
+            <!-- Captcha -->
+            <div class="captcha-section">
+                <input type="text" id="captchaInput" placeholder="Enter Captcha" required>
+                <span id="captcha"></span>
+                <button onclick="generateCaptcha()" class="refresh-btn">↻</button>
+            </div>
+            <button onclick="fetchVehicleData()" class="action-btn">Submit</button>
+        </div>
+
+        <!-- Vehicle Details Section -->
+        <div id="vehicleDetails" class="vehicle-details">
+            <h2 id="welcomeMessage"></h2>
+            <div id="vehicleCardContainer"></div>
+            <button onclick="logout()" class="action-btn">Logout</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="data.js"></script>
+    <script>
+        let captchaText = "";
+
+        function generateCaptcha() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            captchaText = Array.from({ length: 5 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+            document.getElementById("captcha").textContent = captchaText;
+        }
+
+        function fetchVehicleData() {
+            const vehicleIDInput = document.getElementById("vehicleIDInput").value;
+            const captchaInput = document.getElementById("captchaInput").value;
+
+            if (captchaInput !== captchaText) {
+                alert("Incorrect captcha. Please try again.");
+                generateCaptcha();
+                return;
+            }
+
+            const vehicleInfo = vehicleData.find(vehicle => vehicle.vehicleID === vehicleIDInput);
+
+            if (vehicleInfo) {
+                document.getElementById("welcomeMessage").textContent = `Welcome, ${vehicleInfo.ownerName}`;
+                document.getElementById("vehicleIDForm").style.display = "none";
+                document.getElementById("vehicleDetails").style.display = "block";
+
+                const vehicleCard = `
+                    <div class="vehicle-card">
+                        <div><span>Vehicle ID:</span> ${vehicleInfo.vehicleID}</div>
+                        <div><span>Model:</span> ${vehicleInfo.model}</div>
+                        <div><span>Vehicle No:</span> ${vehicleInfo.vehicleNo}</div>
+                        <div><span>Driver Name:</span> ${vehicleInfo.driverName}</div>
+                        <div><span>Owner Name:</span> ${vehicleInfo.ownerName}</div>
+                    </div>
+                `;
+                document.getElementById("vehicleCardContainer").innerHTML = vehicleCard;
+            } else {
+                alert("Invalid Vehicle ID. Please try again.");
+            }
+        }
+
+        function logout() {
+            document.getElementById("vehicleIDForm").style.display = "block";
+            document.getElementById("vehicleDetails").style.display = "none";
+            document.getElementById("vehicleIDInput").value = "";
+            document.getElementById("captchaInput").value = "";
+            generateCaptcha();
+        }
+
+        // Mock vehicle data
+
+        // Initial captcha generation
+        document.addEventListener("DOMContentLoaded", () => {
+            generateCaptcha();
+            document.getElementById("vehicleIDForm").style.display = "block";
+        });
+    </script>
+</body>
+</html>
