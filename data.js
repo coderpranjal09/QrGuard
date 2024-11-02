@@ -1,5 +1,5 @@
 const vehicleData = [
-    { vehicleID: "1234AB", model: "Toyota Corolla", vehicleNo: "UK07CAB1234", driverName: "Pranjal Maithani", ownerName: "Pranjal", driverMobile: "918791273578" },
+    { vehicleID: "1234AB", model: "Toyota Corolla", vehicleNo: "UK07CAB1234", driverName: "Pranjal Maithani", ownerName: "Pranjal Maithani", driverMobile: "8791273578" },
     { vehicleID: "5678CD", model: "Honda Civic", vehicleNo: "MH12DE5678", driverName: "Suresh Gupta", ownerName: "Pooja Singh", driverMobile: "8765432109" },
     { vehicleID: "9012EF", model: "Hyundai Elantra", vehicleNo: "UP32EF9012", driverName: "Manoj Tiwari", ownerName: "Neha Rani", driverMobile: "9654782130" },
     { vehicleID: "3456GH", model: "Ford Figo", vehicleNo: "HR26GH3456", driverName: "Karan Mehta", ownerName: "Ritika Shah", driverMobile: "9872134560" },
