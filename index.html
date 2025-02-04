@@ -152,13 +152,12 @@
     
             // Add your favicon here
             addFavicon('logo.png');
-             // Show loading screen until everything is loaded
-    document.addEventListener("DOMContentLoaded", function () {
-        // Wait for full page load
-        window.onload = function () {
-            document.getElementById("loading-screen").style.display = "none";
-        };
-    });
+            document.addEventListener("DOMContentLoaded", function () {
+                window.onload = function () {
+                    document.getElementById("loading-screen").style.display = "none";
+                };
+            });
+        
             
     </script>
 </body>
