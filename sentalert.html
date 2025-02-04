@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vehicle Alert System</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <script src="data.js"></script> <!-- Linking vehicle data -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <link rel="icon" type="image/png" href="logo.png">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -92,9 +94,46 @@
             gap: 10px;
             justify-content: center;
         }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            font-size: 1.5rem;
+            z-index: 2000;
+            display: none; /* Initially hidden */
+        }
+        
+        .loading {
+            width: 50px;
+            height: 50px;
+            border: 5px solid white;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
     </style>
 </head>
 <body>
+    <div id="fullScreenLoading" class="loading-overlay">
+        <div class="loading"></div>
+        <p>Loading... Please wait</p>
+    </div>
+    
+    
     <div id="vehicleForm" class="container">
         <h1>Enter Vehicle ID</h1>
         <input type="text" id="vehicleID" placeholder="Vehicle ID" required>
@@ -165,17 +204,25 @@
         }
 
         async function startVideo() {
+            document.getElementById('fullScreenLoading').style.display = 'flex'; // Show full-screen loader
+        
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        
+                document.getElementById('videoVerification').style.display = 'block';
+                document.getElementById('issueForm').style.display = 'none';
+                document.getElementById('fullScreenLoading').style.display = 'none'; // Hide loader when camera starts
+                
                 videoElement.srcObject = stream;
                 model = await cocoSsd.load();
-                document.getElementById('issueForm').style.display = 'none';
-                document.getElementById('videoVerification').style.display = 'block';
                 detectVehicle();
+        
             } catch (error) {
                 alert("Camera permission denied! Please allow camera access.");
+                document.getElementById('fullScreenLoading').style.display = 'none'; // Hide loader if error occurs
             }
         }
+        
 
         async function detectVehicle() {
             const predictions = await model.detect(videoElement);
