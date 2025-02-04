@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Guard - Subscription</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    /* Fixed Order Now Button */
+    .order-now-btn {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #007bff;
+      color: #fff;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+    }
+  
+    .order-now-btn:hover {
+      background-color: #0056b3;
+      transform: translateY(-50%) scale(1.05);
+    }
+  
+    body {
+      font-family: Arial, sans-serif;
+      color: #333;
+      background: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+  
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 2rem;
+      background-color: #007bff;
+      color: #fff;
+      width: 100%;
+    }
+  
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+  
+    .header p {
+      font-size: 1.2rem;
+    }
+  
+    /* Subscription Container */
+    .subscription-container {
+      display: grid;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2rem;
+      padding: 2rem;
+      width: 100%;
+      
+    }
+
+    /* Pricing Table */
+    .pricing-table {
+      border-collapse: collapse;
+      margin: 1rem 0;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background: #fff;
+    }
+    
+    .pricing-table th, .pricing-table td {
+      padding: 12px;
+      
+      border: 1px solid #ddd;
+    }
+
+    .pricing-table th {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .pricing-table tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* Button Container */
+    .button-container {
+        position: relative;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 1rem;
+      
+    }
+
+    /* Button Styles */
+    .button {
+      padding: 0.8rem 1.5rem;
+      color: #fff;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .button:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
+    }
+  
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #666;
+      width: 100%;
+      background: #fff;
+      position: relative;
+      bottom: 0;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .button-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .pricing-table {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="order-now-btn" onclick="window.location.href='https:rzp.io/rzp/k1fkrDYI'">Order Now</button>
+
+  <header class="header">
+    <h1>QR Guard</h1>
+    <p>Secure your assets with personalized QR codes and easy subscription options.</p>
+  </header>
+
+  <main class="subscription-container">
+    <table class="pricing-table">
+        <thead>
+          <tr>
+            <th>Service/Plan</th>
+            <th>Price</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colspan="3"><strong>QR Card Services</strong></td>
+          </tr>
+          <tr>
+            <td>Single QR Card Purchase</td>
+            <td>₹199</td>
+            <td>One-time purchase for a basic personalized QR card with essential vehicle monitoring features.</td>
+          </tr>
+          <tr>
+            <td>Bulk QR Card Purchase</td>
+            <td>₹49 per card</td>
+            <td>Discounted price for orders of 10 or more QR cards for families or businesses.</td>
+          </tr>
+          <tr>
+            <td>Custom QR Card Design</td>
+            <td>₹199</td>
+            <td>Custom-designed QR cards for businesses, allowing branding opportunities.</td>
+          </tr>
+          <tr>
+        </tbody>
+      </table>
+      
+
+    <section class="button-container">
+      <button class="button" onclick="window.location.href='https:rzp.io/rzp/k1fkrDYI'">Order QR Code</button>
+      <button class="button" onclick="alert('Subscribe Now page coming soon!')">Alert Subscription</button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2024 QR Guard - All Rights Reserved</p>
+  </footer>
+  <script>
+    
+    document.addEventListener("DOMContentLoaded", function() {
+      document.body.oncopy = function() { return false; };
+      document.body.oncut = function() { return false; };
+      document.body.oncontextmenu = function() { return false; }; // Disables right-click
+      document.body.onselectstart = function() { return false; };
+  });
+  </script>
+</body>
+</html>
