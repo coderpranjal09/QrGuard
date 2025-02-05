@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - QRGuard</title>
+    <script src="employeedata.js" defer></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --background: #f8fafc;
+            --text-color: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--text-color);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 500px;
+            margin: 2rem auto;
+            transition: all 0.3s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
+            }
+        }
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --background: #f8fafc;
+            --text-color: #1e293b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--text-color);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            max-width: 500px;
+            margin: 2rem auto;
+            transition: all 0.3s ease;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .captcha-container {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .captcha-refresh {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .loading-spinner {
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 3px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .nav-buttons {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .back-btn {
+            background: #64748b;
+            margin-top: 1rem;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Container -->
+    <div class="container" id="login-container">
+        <h1>QRGuard Admin Portal</h1>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="mobile">Mobile Number</label>
+                <input type="tel" id="mobile" required>
+            </div>
+            <div class="form-group">
+                <label>Captcha</label>
+                <div class="captcha-container">
+                    <input type="text" id="captcha-input" required>
+                    <div id="captcha-display" class="captcha-display"></div>
+                    <button type="button" class="captcha-refresh" id="refresh-captcha">↻</button>
+                </div>
+            </div>
+            <button type="submit" class="btn" id="login-btn">
+                <span class="btn-text">Login</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="container hidden" id="admin-dashboard">
+        <h2>Welcome, <span id="admin-name"></span></h2>
+        <p class="dashboard-description">
+            QRGuard provides comprehensive vehicle security and assistance solutions.
+            Manage QR code requests and customer queries efficiently through this portal.
+        </p>
+        <div class="nav-buttons">
+            <button class="btn" id="qr-request-btn">QR Code Requests</button>
+            <button class="btn" id="query-form-btn">Manage Queries</button>
+            <button class="btn back-btn" id="logout-btn">Logout</button>
+        </div>
+    </div>
+
+    <!-- QR Request Form -->
+    <div class="container hidden" id="qr-request-form">
+        <h2>New QR Code Request</h2>
+        <form id="qr-form">
+            <div class="form-group">
+                <label for="applier-id">Applier ID</label>
+                <input type="text" id="applier-id" disabled>
+            </div>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="mob-no">Mobile Number</label>
+                <input type="tel" id="mob-no" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email ID</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="vehicle-model">Vehicle Model</label>
+                <input type="text" id="vehicle-model" required>
+            </div>
+            <div class="form-group">
+                <label for="no-plate">Number Plate</label>
+                <input type="text" id="no-plate" required>
+            </div>
+            <div class="form-group">
+                <label for="driver-name">Driver Name</label>
+                <input type="text" id="driver-name" required>
+            </div>
+            <div class="form-group">
+                <label for="owner-name">Owner Name</label>
+                <input type="text" id="owner-name" required>
+            </div>
+            <div class="form-group">
+                <label for="driver-mob-no">Driver Mobile Number</label>
+                <input type="tel" id="driver-mob-no" required>
+            </div>
+            <div class="nav-buttons">
+                <button type="submit" class="btn">Submit Request</button>
+                <button type="button" class="btn back-btn" id="qr-back-btn">Back</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Query Form -->
+    <div class="container hidden" id="query-form">
+        <h2>Manage Customer Query</h2>
+        <form id="query-form">
+            <div class="form-group">
+                <label for="employee-mob-no">applier-id</label>
+                <input type="tel" id="employee-mob-no" disabled>
+            </div>
+            <div class="form-group">
+                <label for="query-type">Select Query</label>
+                <select id="query-type" required>
+                    <option value="">Select...</option>
+                    <option value="stop-services">Stop Services</option>
+                    <option value="renew-subscription">Renew Subscription</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="vehicle-id">Vehicle ID</label>
+                <input type="text" id="vehicle-id" required>
+            </div>
+            <div class="form-group">
+                <label for="owner-mob-no">Owner Mobile Number</label>
+                <input type="tel" id="owner-mob-no" required>
+            </div>
+            <div class="form-group">
+                <label for="owner-name-query">Owner Name</label>
+                <input type="text" id="owner-name-query" required>
+            </div>
+            <div class="form-group">
+                <label for="additional-info">Additional Info</label>
+                <textarea id="additional-info" rows="4"></textarea>
+            </div>
+            <div class="nav-buttons">
+                <button type="submit" class="btn">Submit Query</button>
+                <button type="button" class="btn back-btn" id="query-back-btn">Back</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentAdmin = null;
+        let generatedCaptcha = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            generateCaptcha();
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+            document.getElementById('refresh-captcha').addEventListener('click', generateCaptcha);
+            document.getElementById('qr-request-btn').addEventListener('click', showQRForm);
+            document.getElementById('query-form-btn').addEventListener('click', showQueryForm);
+            document.getElementById('logout-btn').addEventListener('click', logout);
+            document.getElementById('qr-back-btn').addEventListener('click', showDashboard);
+            document.getElementById('query-back-btn').addEventListener('click', showDashboard);
+            document.getElementById('qr-form').addEventListener('submit', handleQRSubmit);
+            document.getElementById('query-form').addEventListener('submit', handleQuerySubmit);
+        }
+
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            generatedCaptcha = Array.from({length: 6}, () => 
+                chars[Math.floor(Math.random() * chars.length)]).join('');
+            document.getElementById('captcha-display').textContent = generatedCaptcha;
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const mobile = document.getElementById('mobile').value;
+            const captcha = document.getElementById('captcha-input').value;
+
+            if (captcha !== generatedCaptcha) {
+                showError('Invalid CAPTCHA! Please try again.');
+                generateCaptcha();
+                return;
+            }
+
+            const admin = employeeData.find(emp => 
+                emp.name === username && 
+                emp.mobno === mobile && 
+                emp.role === 'admin'
+            );
+
+            if (!admin) {
+                showError('Invalid credentials or insufficient privileges');
+                return;
+            }
+
+            currentAdmin = admin;
+            showDashboard();
+            document.getElementById('admin-name').textContent = admin.name;
+            document.getElementById('applier-id').value = admin.mobno;
+            document.getElementById('employee-mob-no').value = admin.mobno; // Autofill employee mobile number
+        }
+
+        function showDashboard() {
+            hideAllContainers();
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+        }
+
+        function showQRForm() {
+            hideAllContainers();
+            document.getElementById('qr-request-form').classList.remove('hidden');
+        }
+
+        function showQueryForm() {
+            hideAllContainers();
+            document.getElementById('query-form').classList.remove('hidden');
+        }
+
+        function logout() {
+            currentAdmin = null;
+            hideAllContainers();
+            document.getElementById('login-container').classList.remove('hidden');
+            document.getElementById('login-form').reset();
+            generateCaptcha();
+        }
+
+        function hideAllContainers() {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.add('hidden');
+            });
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            document.getElementById('login-form').appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 3000);
+        }
+
+        async function handleQRSubmit(e) {
+            e.preventDefault();
+            const applierId = document.getElementById('applier-id').value;
+            const name = document.getElementById('name').value;
+            const mobNo = document.getElementById('mob-no').value;
+            const email = document.getElementById('email').value;
+            const vehicleModel = document.getElementById('vehicle-model').value;
+            const noPlate = document.getElementById('no-plate').value;
+            const driverName = document.getElementById('driver-name').value;
+            const ownerName = document.getElementById('owner-name').value;
+            const driverMobNo = document.getElementById('driver-mob-no').value;
+
+            const mailTo = `mailto:qrguardprivatelimited@gmail.com?subject=QR Code Request&body=Applier ID: ${applierId}%0AName: ${name}%0AMobile No: ${mobNo}%0AEmail ID: ${email}%0AVehicle Model: ${vehicleModel}%0ANumber Plate: ${noPlate}%0ADriver Name: ${driverName}%0AOwner Name: ${ownerName}%0ADriver Mobile No: ${driverMobNo}`;
+            window.location.href = mailTo;
+
+            alert('Request submitted successfully!');
+            showDashboard();
+        }
+
+        async function handleQuerySubmit(e) {
+            e.preventDefault();
+            const employeeMobNo = document.getElementById('employee-mob-no').value;
+            const queryType = document.getElementById('query-type').value;
+            const vehicleId = document.getElementById('vehicle-id').value;
+            const ownerMobNo = document.getElementById('owner-mob-no').value;
+            const ownerName = document.getElementById('owner-name-query').value;
+            const additionalInfo = document.getElementById('additional-info').value;
+
+            const mailTo = `mailto:qrguardprivatelimited@gmail.com?subject=Customer Query&body=Applier ID: ${employeeMobNo}%0AQuery Type: ${queryType}%0AVehicle ID: ${vehicleId}%0AOwner Mobile No: ${ownerMobNo}%0AOwner Name: ${ownerName}%0AAdditional Info: ${additionalInfo}`;
+            window.location.href = mailTo;
+
+            alert('Request submitted successfully!');
+            showDashboard();
+        }
+        window.onload = function() {
+            var forms = document.getElementsByTagName('form');
+            for (var i = 0; i < forms.length; i++) {
+                forms[i].reset(); // Reset form fields to default values
+            }
+        };
+        window.onload = function() {
+            var forms = document.getElementsByTagName('form');
+            for (var i = 0; i < forms.length; i++) {
+                forms[i].setAttribute('autocomplete', 'off'); // Disable autocomplete for the entire form
+                
+                var inputs = forms[i].getElementsByTagName('input');
+                for (var j = 0; j < inputs.length; j++) {
+                    inputs[j].setAttribute('autocomplete', 'off'); // Disable autocomplete for each input field
+                }
+            }
+        };
+                
+    </script>
+</body>
+</html>
