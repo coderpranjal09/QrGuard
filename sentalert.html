@@ -146,17 +146,11 @@
         <p id="vehicleDetails"></p>
 
         <h2>Select Issue</h2>
-       <select id="issueSelect">
-    <option value="">Select an issue</option>
-    <option value="Lights on">The light of the vehicle is on</option>
-    <option value="No parking">Vehicle is parked in a no-parking zone</option>
-    <option value="Vehicle towing">Vehicle is being towed</option>
-    <option value="Blocked path">Vehicle is blocking the path</option>
-    <option value="Suspicious activity">Suspicious activity around the vehicle</option>
-    <option value="Pet/Child inside">Pet or child left inside the vehicle</option>
-    <option value="Window/Door open">Vehicle window or door is open</option>
-</select>
-
+        <select id="issueSelect">
+            <option value="">Select an issue</option>
+            <option value="Lights on">The light of vehicle is on</option>
+            <option value="No parking">Vehicle is parked on no parking</option>
+        </select>
 
         <h2>Additional Information</h2>
         <textarea id="additionalInfo" rows="4" placeholder="Enter extra details..."></textarea>
@@ -271,6 +265,24 @@
             document.body.oncontextmenu = function() { return false; }; // Disables right-click
             document.body.onselectstart = function() { return false; };
         });
+        window.onload = function() {
+            var forms = document.getElementsByTagName('form');
+            for (var i = 0; i < forms.length; i++) {
+                forms[i].reset(); // Reset form fields to default values
+            }
+        };
+        window.onload = function() {
+            var forms = document.getElementsByTagName('form');
+            for (var i = 0; i < forms.length; i++) {
+                forms[i].setAttribute('autocomplete', 'off'); // Disable autocomplete for the entire form
+                
+                var inputs = forms[i].getElementsByTagName('input');
+                for (var j = 0; j < inputs.length; j++) {
+                    inputs[j].setAttribute('autocomplete', 'off'); // Disable autocomplete for each input field
+                }
+            }
+        };
+            
     </script>
 </body>
 </html>
