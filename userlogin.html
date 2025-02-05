@@ -217,6 +217,30 @@
             generateCaptcha();
             document.getElementById("vehicleIDForm").style.display = "block";
         });
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.oncopy = function() { return false; };
+            document.body.oncut = function() { return false; };
+            document.body.oncontextmenu = function() { return false; }; // Disables right-click
+            document.body.onselectstart = function() { return false; };
+        });
+        window.onload = function() {
+            var forms = document.getElementsByTagName('form');
+            for (var i = 0; i < forms.length; i++) {
+                forms[i].reset(); // Reset form fields to default values
+            }
+        };
+        window.onload = function() {
+            var forms = document.getElementsByTagName('form');
+            for (var i = 0; i < forms.length; i++) {
+                forms[i].setAttribute('autocomplete', 'off'); // Disable autocomplete for the entire form
+                
+                var inputs = forms[i].getElementsByTagName('input');
+                for (var j = 0; j < inputs.length; j++) {
+                    inputs[j].setAttribute('autocomplete', 'off'); // Disable autocomplete for each input field
+                }
+            }
+        };
+            
     </script>
 </body>
 </html>
