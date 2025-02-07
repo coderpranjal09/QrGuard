@@ -303,6 +303,10 @@
                 <input type="text" id="applier-id" disabled>
             </div>
             <div class="form-group">
+                <label for="vehicleid">Vehicle Id</label>
+                <input type="text" id="vehicleid" required>
+            </div>
+            <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" required>
             </div>
@@ -484,6 +488,7 @@
             const applierId = document.getElementById('applier-id').value;
             const name = document.getElementById('name').value;
             const mobNo = document.getElementById('mob-no').value;
+            const vehicleid=document.getElementById('vehicleid').value;
             const email = document.getElementById('email').value;
             const vehicleModel = document.getElementById('vehicle-model').value;
             const noPlate = document.getElementById('no-plate').value;
@@ -491,7 +496,7 @@
             const ownerName = document.getElementById('owner-name').value;
             const driverMobNo = document.getElementById('driver-mob-no').value;
 
-            const mailTo = `mailto:qrguardprivatelimited@gmail.com?subject=QR Code Request&body=Applier ID: ${applierId}%0AName: ${name}%0AMobile No: ${mobNo}%0AEmail ID: ${email}%0AVehicle Model: ${vehicleModel}%0ANumber Plate: ${noPlate}%0ADriver Name: ${driverName}%0AOwner Name: ${ownerName}%0ADriver Mobile No: ${driverMobNo}`;
+            const mailTo = `mailto:qrguardprivatelimited@gmail.com?subject=QR Code Request&body=Applier ID: ${applierId}%0AName: ${name}%0AVehicleId:${vehicleid}%0AMobile No: ${mobNo}%0AEmail ID: ${email}%0AVehicle Model: ${vehicleModel}%0ANumber Plate: ${noPlate}%0ADriver Name: ${driverName}%0AOwner Name: ${ownerName}%0ADriver Mobile No: ${driverMobNo}`;
             window.location.href = mailTo;
 
             alert('Request submitted successfully!');
