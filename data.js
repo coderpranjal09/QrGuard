@@ -44,4 +44,5 @@ const vehicleData = [
     { vehicleID: "9012GH", model: "Tata Safari", vehicleNo: "WB6FGH9012", driverName: "Harpreet Kaur", ownerName: "Veena Malik", driverMobile: "9445123456" },
     { vehicleID: "3456IJ", model: "Kia Sonet", vehicleNo: "GJ8HIJ3456", driverName: "Shubham Yadav", ownerName: "Nikita Desai", driverMobile: "9423123456" },
     { vehicleID: "7890KL", model: "Toyota Etios", vehicleNo: "UP9JKL7890", driverName: "Mahesh Nair", ownerName: "Ankit Trivedi", driverMobile: "9409123456" },
+    { vehicleID: "7891AB", model: "Toyota Etios", vehicleNo: "none", driverName: "", ownerName: "none", driverMobile: "none" },
 ];
