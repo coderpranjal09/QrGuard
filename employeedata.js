@@ -8,7 +8,7 @@ const employeeData = [
         name:"Santosh Bohra",
         mobno:"8126376009",
         emailid:"universebhaijan111@gmail.com",
-        role:"work office"
+        role:"admin"
     }
     // Add more employees as needed
 ];
