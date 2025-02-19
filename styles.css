@@ -1062,3 +1062,43 @@ body {
     opacity: 1;
     visibility: visible;
 }
+ /* Logo Marquee Section */
+ .logo-marquee {
+    background: #ffffff;
+    padding: 1rem 0;
+    margin-top: 80px; /* Match navbar height */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Hide overflow for marquee effect */
+    position: relative;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    width: max-content; /* Allow container to expand */
+    animation: marquee 20s linear infinite; /* Marquee animation */
+}
+
+.partner-logo {
+    height: 50px;
+    margin: 0 2rem; /* Space between logos */
+    opacity: 1; /* Normal opacity */
+    filter: none; /* No grayscale effect */
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+    0% {
+        transform: translateX(100%); /* Start from the right */
+    }
+    100% {
+        transform: translateX(-100%); /* Move to the left */
+    }
+}
+
+@media (max-width: 768px) {
+    .partner-logo {
+        height: 40px; /* Smaller logos for mobile */
+        margin: 0 1rem; /* Less space between logos */
+    }
+}
