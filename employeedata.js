@@ -22,5 +22,17 @@ const employeeData = [
         emailid:"visheshpokhriyal598@gmail.com",
         role:"admin"
     }
+    ,{
+        name:"Anisha Bhandari",
+        mobno:"7906026357",
+        emailid:"anishabhandari0013@gmail.com",
+        role:"admin"
+    }
+    ,{
+        name:"Radhika Bhatt",
+        mobno:"6280864435",
+        emailid:"radhikabhatt467@gmail.com",
+        role:"admin"
+    }
     // Add more employees as needed
 ];
