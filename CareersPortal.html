@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Guard Technologies - Careers</title>
+  <style>
+    /* Modern LinkedIn-inspired CSS */
+    :root {
+      --primary-color: #0073b1;
+      --secondary-color: #004182;
+      --background-color: #f5f5f5;
+      --text-color: #000000e6;
+      --card-bg: #ffffff;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .job-card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      padding: 30px;
+      transition: transform 0.2s;
+    }
+
+    .job-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .job-title {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      margin: 0;
+    }
+
+    .job-details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .detail-card {
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .detail-card h3 {
+      margin-top: 0;
+      color: var(--secondary-color);
+    }
+
+    .requirements-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    .requirements-table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .requirements-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .apply-button {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 24px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: background-color 0.2s;
+    }
+
+    .apply-button:hover {
+      background-color: var(--secondary-color);
+    }
+
+    /* Modern Form Styles */
+    .form-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .form-content {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      position: relative;
+      animation: formSlide 0.3s ease-out;
+    }
+
+    @keyframes formSlide {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--secondary-color);
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .submit-button {
+      grid-column: span 2;
+      background: var(--primary-color);
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .submit-button:hover {
+      background: var(--secondary-color);
+    }
+
+    /* Success Page */
+    .success-container {
+      display: none;
+      text-align: center;
+      padding: 100px 20px;
+    }
+
+    .success-check {
+      width: 80px;
+      height: 80px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      margin: 0 auto 30px;
+      position: relative;
+    }
+
+    .success-check::after {
+      content: '✓';
+      position: absolute;
+      color: white;
+      font-size: 40px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .submit-button {
+        grid-column: span 1;
+      }
+
+      .job-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .job-title {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container main-content">
+    <div class="header">
+      <h1>Career Opportunities</h1>
+      <p>Join our team and help shape the future of QR technology</p>
+    </div>
+
+    <div class="job-card">
+      <div class="job-header">
+        <h2 class="job-title">QR Code Sales Ambassador</h2>
+        <span class="job-type">Full-time</span>
+      </div>
+
+      <div class="job-details-grid">
+        <div class="detail-card">
+          <h3>Key Responsibilities</h3>
+          <ul>
+            <li>Promote and sell QR code solutions</li>
+            <li>Build client relationships</li>
+            <li>Meet sales targets</li>
+            <li>Market analysis</li>
+          </ul>
+        </div>
+
+        <div class="detail-card">
+          <h3>Requirements</h3>
+          <table class="requirements-table">
+            <tr>
+              <td>Experience</td>
+              <td>0-2 years</td>
+            </tr>
+            <tr>
+              <td>Education</td>
+              <td>Any Graduate</td>
+            </tr>
+            <tr>
+              <td>Skills</td>
+              <td>Communication, Sales</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="detail-card">
+          <h3>Benefits</h3>
+          <ul>
+            <li>Performance bonuses</li>
+            <li>Flexible hours</li>
+            <li>Career growth</li>
+            <li>Training programs</li>
+          </ul>
+        </div>
+      </div>
+
+      <a href="#" class="apply-button" id="applyButton">Apply Now</a>
+    </div>
+  </div>
+
+  <!-- Application Form -->
+  <div class="form-container" id="formContainer">
+    <div class="form-content">
+      <h2>Application Form</h2>
+      <form id="applicationForm" class="form-grid">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" required>
+        </div>
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input type="text" id="location" required>
+        </div>
+        <div class="form-group">
+          <label for="experience">Experience (years)</label>
+          <input type="number" id="experience" required>
+        </div>
+        <div class="form-group">
+          <label for="education">Education</label>
+          <select id="education" required>
+            <option value="">Select</option>
+            <option>High School</option>
+            <option>Bachelor's Degree</option>
+            <option>Master's Degree</option>
+          </select>
+        </div>
+        <button type="submit" class="submit-button">Submit Application</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Success Page -->
+  <div class="container success-container" id="successPage">
+    <div class="success-check"></div>
+    <h2>Application Submitted Successfully!</h2>
+    <p>We've received your application. Our team will review your submission and contact you within 3-5 business days.</p>
+    <a href="#" class="apply-button" onclick="location.reload()">Return to Careers</a>
+  </div>
+
+  <script>
+    // Form Handling
+    document.getElementById('applyButton').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('formContainer').style.display = 'flex';
+    });
+
+    document.getElementById('applicationForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      // Hide form and main content
+      document.getElementById('formContainer').style.display = 'none';
+      document.querySelector('.main-content').style.display = 'none';
+      
+      // Show success page
+      document.getElementById('successPage').style.display = 'block';
+    });
+
+    // Close form when clicking outside
+    window.onclick = function(e) {
+      if (e.target == document.getElementById('formContainer')) {
+        document.getElementById('formContainer').style.display = 'none';
+      }
+    }
+    document.getElementById('applicationForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        // Collect form data
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const location = document.getElementById('location').value;
+        const experience = document.getElementById('experience').value;
+        const education = document.getElementById('education').value;
+        
+        // Construct email body with proper encoding
+        const emailBody = `Full Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nLocation: ${location}\nExperience: ${experience} years\nEducation: ${education}`;
+        const encodedBody = encodeURIComponent(emailBody);
+      
+        // Open email client
+        window.location.href = `mailto:qrguardprivatelimited@gmail.com?subject=Job Application - QR Code Sales Ambassador&body=${encodedBody}`;
+        
+        // Hide form and main content
+        document.getElementById('formContainer').style.display = 'none';
+        document.querySelector('.main-content').style.display = 'none';
+      
+        // Show success page
+        document.getElementById('successPage').style.display = 'block';
+      });
+      
+  </script>
+</body>
+</html>
