@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QRGuard - Checkout</title>
+    <style>
+      /* General Styles */
+      body {
+        font-family: "Inter", Arial, sans-serif;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        margin: 0;
+        padding: 0;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .checkout-container {
+        display: flex;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        max-width: 1000px;
+        width: 90%;
+        margin: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .checkout-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .product-section {
+        flex: 1;
+        padding: 40px;
+        background: linear-gradient(135deg, #1065b7, #0d1e29);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+      }
+
+      .product-section img {
+        max-width: 100%;
+        width: 200px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        transition: transform 0.3s ease;
+      }
+
+      .product-section img:hover {
+        transform: scale(1.05);
+      }
+
+      .product-section h2 {
+        font-size: 1.8rem;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .product-section .price {
+        font-size: 1.4rem;
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .product-section .original-price {
+        text-decoration: line-through;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      .product-section .discounted-price {
+        color: #ffdd57;
+        font-weight: 700;
+      }
+
+      .details-section {
+        flex: 1;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: white;
+      }
+
+      .details-section h1 {
+        color: #1065b7;
+        font-size: 2.2rem;
+        margin-bottom: 20px;
+        font-weight: 700;
+      }
+
+      .details-section p {
+        color: #555;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
+
+      .details-section ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .details-section ul li {
+        background: url("check-icon.svg") no-repeat left center;
+        background-size: 20px;
+        padding-left: 30px;
+        margin-bottom: 10px;
+        color: #555;
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      .pay-button {
+        display: inline-block;
+        width: 100%;
+        background: linear-gradient(135deg, #1065b7, #0d1e29);
+        text-align: center;
+        font-weight: 800;
+        padding: 14px 0;
+        color: white;
+        font-size: 16px;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-top: 20px;
+      }
+
+      .pay-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 30px;
+        color: #777;
+        font-size: 0.9rem;
+      }
+
+      .footer a {
+        color: #1065b7;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer a:hover {
+        color: #0d1e29;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .checkout-container {
+          flex-direction: column;
+          width: 100%;
+          margin: 10px;
+        }
+
+        .product-section,
+        .details-section {
+          padding: 30px;
+        }
+
+        .product-section img {
+          width: 150px;
+        }
+
+        .details-section h1 {
+          font-size: 1.8rem;
+        }
+
+        .pay-button {
+          font-size: 14px;
+          padding: 12px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="checkout-container">
+      <!-- Product Section -->
+      <div class="product-section">
+        <img src="Demo Qr.png" alt="QR Code Product" />
+        <h2>QRGuard Premium</h2>
+        <div class="price">
+          <span class="original-price">₹99</span>
+          <span class="discounted-price">₹49</span>
+        </div>
+        <p>Secure your vehicle with our advanced QRGuard service.</p>
+      </div>
+
+      <!-- Details Section -->
+      <div class="details-section">
+        <h1>Checkout</h1>
+        <p>
+          You're purchasing the QRGuard Premium service. Here's what you'll get:
+        </p>
+        <ul>
+          <li>Real-time vehicle tracking</li>
+          <li>24/7 emergency support</li>
+          <li>AI-powered security alerts</li>
+          <li>Instant incident verification</li>
+        </ul>
+        <a
+          class="pay-button"
+          href="https://pages.razorpay.com/pl_Pqqs6II35EVJJc/view"
+          >Pay Now</a
+        >
+        <div class="footer">
+          <p>
+            © 2024 QRGuard. All rights reserved. |
+            <a href="privacypolicy.html">Privacy Policy</a> |
+            <a href="services.html">Terms of Service</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
