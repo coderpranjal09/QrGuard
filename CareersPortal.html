@@ -23,6 +23,10 @@
       line-height: 1.6;
     }
 
+    body.no-scroll {
+      overflow: hidden; /* Disable scrolling when form is open */
+    }
+
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -127,6 +131,7 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      overflow-y: auto; /* Enable scrolling inside the form */
     }
 
     .form-content {
@@ -137,6 +142,7 @@
       max-width: 600px;
       position: relative;
       animation: formSlide 0.3s ease-out;
+      margin: 20px 0; /* Add margin for better spacing */
     }
 
     @keyframes formSlide {
@@ -180,6 +186,8 @@
       font-size: 16px;
       cursor: pointer;
       transition: background 0.2s;
+      width: 100%; /* Full width */
+      box-sizing: border-box; /* Include padding in width */
     }
 
     .submit-button:hover {
@@ -231,7 +239,6 @@
         margin-bottom: 15px;
       }
     }
-    
   </style>
 </head>
 <body>
@@ -340,54 +347,62 @@
 
   <script>
     // Form Handling
-    document.getElementById('applyButton').addEventListener('click', (e) => {
+    const applyButton = document.getElementById('applyButton');
+    const formContainer = document.getElementById('formContainer');
+    const body = document.body;
+
+    applyButton.addEventListener('click', (e) => {
       e.preventDefault();
-      document.getElementById('formContainer').style.display = 'flex';
+      formContainer.style.display = 'flex';
+      body.classList.add('no-scroll'); // Disable scrolling
     });
 
     document.getElementById('applicationForm').addEventListener('submit', (e) => {
       e.preventDefault();
       
       // Hide form and main content
-      document.getElementById('formContainer').style.display = 'none';
+      formContainer.style.display = 'none';
       document.querySelector('.main-content').style.display = 'none';
       
       // Show success page
       document.getElementById('successPage').style.display = 'block';
+      body.classList.remove('no-scroll'); // Re-enable scrolling
     });
 
     // Close form when clicking outside
     window.onclick = function(e) {
-      if (e.target == document.getElementById('formContainer')) {
-        document.getElementById('formContainer').style.display = 'none';
+      if (e.target == formContainer) {
+        formContainer.style.display = 'none';
+        body.classList.remove('no-scroll'); // Re-enable scrolling
       }
-    }
+    };
+
     document.getElementById('applicationForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        // Collect form data
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const location = document.getElementById('location').value;
-        const experience = document.getElementById('experience').value;
-        const education = document.getElementById('education').value;
-        
-        // Construct email body with proper encoding
-        const emailBody = `Full Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nLocation: ${location}\nExperience: ${experience} years\nEducation: ${education}`;
-        const encodedBody = encodeURIComponent(emailBody);
+      e.preventDefault();
       
-        // Open email client
-        window.location.href = `mailto:qrguardprivatelimited@gmail.com?subject=Job Application - QR Code Sales Ambassador&body=${encodedBody}`;
-        
-        // Hide form and main content
-        document.getElementById('formContainer').style.display = 'none';
-        document.querySelector('.main-content').style.display = 'none';
+      // Collect form data
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const location = document.getElementById('location').value;
+      const experience = document.getElementById('experience').value;
+      const education = document.getElementById('education').value;
       
-        // Show success page
-        document.getElementById('successPage').style.display = 'block';
-      });
+      // Construct email body with proper encoding
+      const emailBody = `Full Name: ${name}\nEmail: ${email}\nPhone: ${phone}\nLocation: ${location}\nExperience: ${experience} years\nEducation: ${education}`;
+      const encodedBody = encodeURIComponent(emailBody);
+    
+      // Open email client
+      window.location.href = `mailto:qrguardprivatelimited@gmail.com?subject=Job Application - QR Code Sales Ambassador&body=${encodedBody}`;
       
+      // Hide form and main content
+      formContainer.style.display = 'none';
+      document.querySelector('.main-content').style.display = 'none';
+    
+      // Show success page
+      document.getElementById('successPage').style.display = 'block';
+      body.classList.remove('no-scroll'); // Re-enable scrolling
+    });
   </script>
 </body>
 </html>
