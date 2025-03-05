@@ -234,22 +234,22 @@
             <button class="btn btn-primary" onclick="callOwner()">📞 Call Owner</button>
         </div>
     </div>
-    <div id="cameraPermissionOverlay" class="overlay">
-        <div class="overlay-content">
-            <h2>Camera Access Required</h2>
-            <p>We need access to your camera to verify the incident using AI. Please note that:</p>
-            <ul>
-                <li>We do not store any camera information.</li>
-                <li>Your data is processed in real-time and not saved on our servers.</li>
-                <li>This is solely for verification purposes.</li>
-            </ul>
-            <div class="btn-group">
-                <button class="btn btn-primary" onclick="grantCameraAccess()">Allow Access</button>
-                <button class="btn btn-secondary" onclick="denyCameraAccess()">Deny Access</button>
-            </div>
+<!-- Camera Permission Overlay -->
+<div id="cameraPermissionOverlay" class="overlay">
+    <div class="overlay-content">
+        <h2>Camera Access Required</h2>
+        <p>We need access to your camera to verify the incident using AI. Please note that:</p>
+        <ul>
+            <li>We do not store any camera information.</li>
+            <li>Your data is processed in real-time and not saved on our servers.</li>
+            <li>This is solely for verification purposes.</li>
+        </ul>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="grantCameraAccess()">Allow Access</button>
+            <button class="btn btn-secondary" onclick="denyCameraAccess()">Deny Access</button>
         </div>
     </div>
-
+</div>
     <script>
         let videoElement = document.getElementById('video');
         let focusBox = document.getElementById('focusBox');
@@ -356,25 +356,51 @@
                 }
             }
         };
+            // Camera Permission Overlay Script
+document.addEventListener("DOMContentLoaded", function () {
+    // Get references to DOM elements
+    const cameraPermissionOverlay = document.getElementById('cameraPermissionOverlay');
+    const videoElement = document.getElementById('video');
+    const grantAccessButton = document.querySelector('.overlay-content .btn-primary');
+    const denyAccessButton = document.querySelector('.overlay-content .btn-secondary');
 
-        async function startVideo() {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-                
-                document.getElementById('videoVerification').style.display = 'block';
-                document.getElementById('issueForm').style.display = 'none';
-                document.getElementById('fullScreenLoading').style.display = 'none'; // Hide loader when camera starts
-                
-                videoElement.srcObject = stream;
-                model = await cocoSsd.load();
-                detectVehicle();
-                
-            } catch (error) {
-                alert("Camera permission denied! Please allow camera access.");
-                document.getElementById('fullScreenLoading').style.display = 'none'; // Hide loader if error occurs
-            }
+    // Show the camera permission overlay
+    function showCameraPermissionOverlay() {
+        cameraPermissionOverlay.style.display = 'flex';
+    }
+
+    // Grant camera access
+    async function grantCameraAccess() {
+        try {
+            // Request camera access
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+            cameraPermissionOverlay.style.display = 'none'; // Hide the overlay
+            videoElement.srcObject = stream; // Set the video source to the camera stream
+            videoElement.play(); // Start playing the video
+            console.log("Camera access granted!");
+        } catch (error) {
+            console.error("Error accessing camera:", error);
+            alert("Camera permission denied! Please allow camera access.");
         }
-            
+    }
+
+    // Deny camera access
+    function denyCameraAccess() {
+        cameraPermissionOverlay.style.display = 'none'; // Hide the overlay
+        alert("Camera access is required. Please refresh the page to try again.");
+    }
+
+    // Attach event listeners to buttons
+    grantAccessButton.addEventListener('click', grantCameraAccess);
+    denyAccessButton.addEventListener('click', denyCameraAccess);
+
+    // Example: Trigger the overlay when a button is clicked
+    const startVerificationButton = document.getElementById('startVerificationButton');
+    if (startVerificationButton) {
+        startVerificationButton.addEventListener('click', showCameraPermissionOverlay);
+    }
+});
+        
     </script>
 </body>
 </html>
