@@ -214,6 +214,106 @@
             font-weight: 500;
             display: none;
         }
+
+        /* Base styles (already defined in your code) */
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem; /* Reduce padding for smaller screens */
+    }
+
+    .container {
+        padding: 1.5rem; /* Reduce container padding */
+        margin: 0.5rem; /* Reduce container margin */
+    }
+
+    h1 {
+        font-size: 1.75rem; /* Reduce heading size */
+    }
+
+    h2 {
+        font-size: 1.5rem; /* Reduce subheading size */
+    }
+
+    input, select, textarea {
+        padding: 0.75rem; /* Reduce input padding */
+        font-size: 0.9rem; /* Reduce font size for inputs */
+    }
+
+    .btn {
+        padding: 0.75rem 1rem; /* Reduce button padding */
+        font-size: 0.9rem; /* Reduce button font size */
+    }
+
+    video {
+        margin: 1rem 0; /* Reduce video margin */
+    }
+
+    .detection-info {
+        font-size: 1rem; /* Reduce detection info font size */
+        padding: 0.75rem; /* Reduce detection info padding */
+    }
+
+    .success-card {
+        padding: 1.5rem; /* Reduce success card padding */
+    }
+
+    .btn-group {
+        flex-direction: column; /* Stack buttons vertically on small screens */
+        gap: 0.5rem; /* Reduce gap between buttons */
+    }
+
+    .btn-group .btn {
+        width: 100%; /* Full width buttons */
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 0.5rem; /* Further reduce padding for very small screens */
+    }
+
+    .container {
+        padding: 1rem; /* Further reduce container padding */
+        border-radius: 1rem; /* Reduce border radius */
+    }
+
+    h1 {
+        font-size: rem; /* Further reduce heading size */
+    }
+
+    h2 {
+        font-size: 1.25rem; /* Further reduce subheading size */
+    }
+
+    input, select, textarea {
+        padding: 1rem; /* Further reduce input padding */
+        font-size: 1rem; /* Further reduce font size for inputs */
+    }
+
+    .btn {
+        padding: 1rem 0.75rem; /* Further reduce button padding */
+        font-size: 1rem; /* Further reduce button font size */
+    }
+
+    video {
+        margin: 0.75rem 0; /* Further reduce video margin */
+    }
+
+    .detection-info {
+        font-size: 0.9rem; /* Further reduce detection info font size */
+        padding: 0.5rem; /* Further reduce detection info padding */
+    }
+
+    .success-card {
+        padding: 1rem; /* Further reduce success card padding */
+    }
+
+    .btn-group {
+        gap: 0.25rem; /* Further reduce gap between buttons */
+    }
+}
     </style>
 </head>
 <body>
