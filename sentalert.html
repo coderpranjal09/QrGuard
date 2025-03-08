@@ -5,192 +5,244 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vehicle Alert System</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <script src="data.js"></script> <!-- Linking vehicle data -->
+    <script src="data.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-    <link rel="icon" type="image/png" href="logo.png">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --text: #f8fafc;
+            --success: #22c55e;
+            --error: #ef4444;
+            --warning: #eab308;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #f4f4f4;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            flex-direction: column;
-            width: 100%;
+            padding: 2rem;
         }
+
         .container {
-            text-align: center;
-            padding: 20px;
-            width: 80%;
-            max-width: 600px;
-        }
-        h1, h2 { color: #e94560; }
-        input, select, textarea {
+            background: var(--surface);
+            border-radius: 1.5rem;
+            padding: 2rem;
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
-            font-size: 1rem;
-            background: #1f4068;
-            color: #f4f4f4;
+            max-width: 640px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            margin: 1rem;
+            transition: transform 0.3s ease;
+            display: none;
         }
-        .btn {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            border: none;
-            transition: 0.3s;
-            margin: 5px 0; /* Proper button spacing */
-        }
-        .btn-primary { background-color: #e94560; color: white; }
-        .btn-primary:hover { background-color: #d12f4e; }
-        video {
-            width: 100%;
-            border-radius: 8px;
+
+        .active-step {
             display: block;
         }
-        .focus-box {
-            position: absolute;
-            border: 3px solid green;
-            display: none;
-            position: absolute;
+
+        h1, h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
         }
-        .detection-info {
-            margin-top: 10px;
-            font-size: 1.2rem;
-            color: #0f0;
-            font-weight: bold;
+
+        input, select, textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin: 10px 0;
         }
-        .loading {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #e94560;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 2s linear infinite;
-            margin: auto;
+        select{
+            color: #ffffff;
+            background-color: #1e293b;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        option{
+            color: black;
+            background-color: rgb(162, 168, 236);
         }
-        .alert-box {
-            display: none;
-            background: #ff4d4d;
-            color: white;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-        }
-        .btn-group {
-            display: flex;
-            gap: 10px;
+        .btn {
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            margin: 10px 0;
         }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        video {
+            width: 100%;
+            border-radius: 1rem;
+            margin: 1.5rem 0;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
         .loading-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(15, 23, 42, 0.9);
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            color: white;
-            font-size: 1.5rem;
-            z-index: 2000;
-            display: none; /* Initially hidden */
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            display: none;
         }
-        
-        .loading {
-            width: 50px;
-            height: 50px;
-            border: 5px solid white;
-            border-top: 5px solid transparent;
+
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .overlay {
+
+        .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
+            background: rgba(15, 23, 42, 0.9);
+            display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
-            display: none; /* Initially hidden */
+            z-index: 2000;
         }
-        
-        .overlay-content {
-            background: #1f4068;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
+
+        .modal-content {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 1.5rem;
             max-width: 500px;
             width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
-        
-        .overlay-content h2 {
-            color: #e94560;
-            margin-bottom: 15px;
+
+        .alert-box {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin: 1rem 0;
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid var(--error);
+            color: var(--error);
         }
-        
-        .overlay-content p {
-            margin-bottom: 15px;
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
-        
-        .overlay-content ul {
-            text-align: left;
-            margin-bottom: 20px;
+
+        .success-card {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid var(--success);
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
         }
-        
-        .overlay-content ul li {
-            margin-bottom: 10px;
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
         }
-        
-        .btn-secondary {
-            background-color: #333;
-            color: white;
+
+        .btn-group .btn {
+            flex: 1;
         }
-        
-        .btn-secondary:hover {
-            background-color: #555;
+
+        .video-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
         }
-        
+
+        .detection-outline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 3px solid var(--success);
+            border-radius: 1rem;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+            pointer-events: none;
+            display: none;
+        }
+
+        .detection-info {
+            background: var(--surface);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            border: 2px solid var(--success);
+            color: var(--success);
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div id="fullScreenLoading" class="loading-overlay">
-        <div class="loading"></div>
+        <div class="loading-spinner"></div>
         <p>Loading... Please wait</p>
     </div>
-    
-    
-    <div id="vehicleForm" class="container">
+
+    <div id="consentModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Camera Access Required</h3>
+            <p>We need camera access to verify the vehicle. Your data is processed in real-time and not stored.</p>
+            <div class="btn-group">
+                <button class="btn" onclick="proceedWithVerification()">Accept & Continue</button>
+                <button class="btn" onclick="cancelVerification()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 1: Vehicle ID Input -->
+    <div id="vehicleForm" class="container active-step">
         <h1>Enter Vehicle ID</h1>
-        <input type="text" id="vehicleID" placeholder="Vehicle ID" required>
-        <button class="btn btn-primary" onclick="nextStep()">Next</button>
+        <input type="text" id="vehicleID" placeholder="Vehicle ID" required autocomplete="off">
+        <button class="btn" onclick="nextStep()">Next</button>
         <div id="errorMsg" class="alert-box">🚨 Vehicle Not Found! Please check Vehicle ID.</div>
     </div>
 
-    <div id="issueForm" class="container" style="display: none;">
+    <!-- Step 2: Issue Selection -->
+    <div id="issueForm" class="container">
         <h2>Vehicle Information</h2>
         <p id="vehicleDetails"></p>
 
@@ -208,54 +260,53 @@
             <option value="Breakdown">Vehicle is broken down</option>
             <option value="Unauthorized access">Unauthorized access attempt</option>
         </select>
-        
-            
 
         <h2>Additional Information</h2>
-        <textarea id="additionalInfo" rows="4" placeholder="Enter extra details..."></textarea>
+        <textarea id="additionalInfo" rows="4" placeholder="Enter extra details..." autocomplete="off"></textarea>
 
-        <button class="btn btn-primary" onclick="startVideo()">Start Verification</button>
+        <button class="btn" onclick="showConsentModal()">Start Verification</button>
     </div>
 
-    <div id="videoVerification" class="container" style="display: none; position: relative;">
+    <!-- Step 3: Camera Verification -->
+    <div id="videoVerification" class="container">
         <h2>Verifying Vehicle...</h2>
-        <p>Please ! Focous camera on vehicle</p>
-        <video id="video" autoplay playsinline></video>
-        <div id="focusBox" class="focus-box"></div>
+        <p>Please focus camera on vehicle</p>
+        <div class="video-container">
+            <video id="video" autoplay playsinline></video>
+            <div id="detectionOutline" class="detection-outline"></div>
+        </div>
         <div id="detectionInfo" class="detection-info"></div>
-        <div id="loading" class="loading"></div>
     </div>
 
-    <div id="successMessage" class="container" style="display: none;">
+    <!-- Step 4: Success Message -->
+    <div id="successMessage" class="container success-card">
         <h2>Verification Successful</h2>
         <p>The vehicle has been successfully verified.</p>
         <div class="btn-group">
-            <button class="btn btn-primary" onclick="sendAlert()">📩 Send Alert</button>
-            <button class="btn btn-primary" onclick="callOwner()">📞 Call Owner</button>
+            <button class="btn" onclick="sendAlert()">📩 Send Alert</button>
+            <button class="btn" onclick="callOwner()">📞 Call Owner</button>
         </div>
     </div>
-<!-- Camera Permission Overlay -->
-<div id="cameraPermissionOverlay" class="overlay">
-    <div class="overlay-content">
-        <h2>Camera Access Required</h2>
-        <p>We need access to your camera to verify the incident using AI. Please note that:</p>
-        <ul>
-            <li>We do not store any camera information.</li>
-            <li>Your data is processed in real-time and not saved on our servers.</li>
-            <li>This is solely for verification purposes.</li>
-        </ul>
-        <div class="btn-group">
-            <button class="btn btn-primary" onclick="grantCameraAccess()">Allow Access</button>
-            <button class="btn btn-secondary" onclick="denyCameraAccess()">Deny Access</button>
-        </div>
-    </div>
-</div>
+
     <script>
         let videoElement = document.getElementById('video');
-        let focusBox = document.getElementById('focusBox');
-        let detectionInfo = document.getElementById('detectionInfo');
         let vehicleID, vehicleInfo, model;
         let stream;
+        let detectionOutline = document.getElementById('detectionOutline');
+        let detectionInfo = document.getElementById('detectionInfo');
+
+        // Initialize first step
+        document.addEventListener("DOMContentLoaded", () => {
+            showStep('vehicleForm');
+        });
+
+        function showStep(stepId) {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.remove('active-step');
+            });
+            const step = document.getElementById(stepId);
+            if (step) step.classList.add('active-step');
+        }
 
         function nextStep() {
             vehicleID = document.getElementById('vehicleID').value.trim().toUpperCase();
@@ -263,144 +314,99 @@
 
             if (vehicleInfo) {
                 document.getElementById("errorMsg").style.display = "none";
-                document.getElementById("vehicleForm").style.display = "none";
-                document.getElementById("issueForm").style.display = "block";
-
                 document.getElementById("vehicleDetails").innerHTML = `
                     <strong>Model:</strong> ${vehicleInfo.model} <br>
                     <strong>Vehicle No:</strong> ${vehicleInfo.vehicleNo} <br>
                     <strong>Owner:</strong> ${vehicleInfo.ownerName} <br>
                     <strong>Driver:</strong> ${vehicleInfo.driverName}
                 `;
+                showStep('issueForm');
             } else {
                 document.getElementById("errorMsg").style.display = "block";
             }
         }
 
-        async function startVideo() {
-            document.getElementById('fullScreenLoading').style.display = 'flex'; // Show full-screen loader
-        
+        function showConsentModal() {
+            document.getElementById('consentModal').style.display = 'flex';
+        }
+
+        async function proceedWithVerification() {
+            document.getElementById('consentModal').style.display = 'none';
+            document.getElementById('fullScreenLoading').style.display = 'flex';
+
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        
-                document.getElementById('videoVerification').style.display = 'block';
-                document.getElementById('issueForm').style.display = 'none';
-                document.getElementById('fullScreenLoading').style.display = 'none'; // Hide loader when camera starts
-                
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "environment" } 
+                });
                 videoElement.srcObject = stream;
-                model = await cocoSsd.load();
-                detectVehicle();
-        
+                videoElement.onloadedmetadata = async () => {
+                    videoElement.play();
+                    document.getElementById('fullScreenLoading').style.display = 'none';
+                    showStep('videoVerification');
+                    model = await cocoSsd.load();
+                    detectVehicle();
+                };
             } catch (error) {
                 alert("Camera permission denied! Please allow camera access.");
-                document.getElementById('fullScreenLoading').style.display = 'none'; // Hide loader if error occurs
+                document.getElementById('fullScreenLoading').style.display = 'none';
+                showStep('issueForm');
             }
         }
-        
+
+        function cancelVerification() {
+            document.getElementById('consentModal').style.display = 'none';
+            showStep('issueForm');
+        }
 
         async function detectVehicle() {
             const predictions = await model.detect(videoElement);
             let detected = false;
+            let highestScore = 0;
+
+            // Clear previous detection outline and info
+            detectionOutline.style.display = 'none';
+            detectionInfo.style.display = 'none';
 
             predictions.forEach(prediction => {
-                if (["car", "bus", "truck"].includes(prediction.class) && prediction.score > 0.75) {
-                    detected = true;
-                    focusBox.style.left = `${prediction.bbox[0]}px`;
-                    focusBox.style.top = `${prediction.bbox[1]}px`;
-                    focusBox.style.width = `${prediction.bbox[2]}px`;
-                    focusBox.style.height = `${prediction.bbox[3]}px`;
-                    focusBox.style.display = 'block';
-                    detectionInfo.innerHTML = `🚗 Detected: ${prediction.class} (${(prediction.score * 100).toFixed(2)}%)`;
+                if (["car", "bus", "truck", "motorcycle", "bicycle"].includes(prediction.class)) {
+                    if (prediction.score > highestScore) highestScore = prediction.score;
+
+                    if (prediction.score >= 0.65) {
+                        detected = true;
+                        // Show detection outline
+                        detectionOutline.style.display = 'block';
+
+                        // Show detection info
+                        detectionInfo.textContent = `${prediction.class} (${(prediction.score * 100).toFixed(2)}%)`;
+                        detectionInfo.style.display = 'block';
+                    }
                 }
             });
 
-            if (detected) {
+            if (detected && highestScore >= 0.65) {
                 setTimeout(() => {
-                    document.getElementById('videoVerification').style.display = 'none';
-                    document.getElementById('successMessage').style.display = 'block';
-                }, 2000);
+                    if (stream) stream.getTracks().forEach(track => track.stop());
+                    showStep('successMessage');
+                }, 5000); // 5-second delay before showing success message
             } else {
-                setTimeout(detectVehicle, 1000);
+                setTimeout(detectVehicle, 500);
             }
         }
 
         function sendAlert() {
-            let msg = `🚨 Vehicle Alert! Issue: ${document.getElementById("issueSelect").value}`;
+            const msg = `🚨 Vehicle Alert! Issue: ${document.getElementById("issueSelect").value}`;
             window.location.href = `sms:${vehicleInfo.driverMobile}?body=${encodeURIComponent(msg)}`;
         }
 
         function callOwner() {
             window.location.href = `tel:${vehicleInfo.driverMobile}`;
         }
-        
+
+        // Security features
         document.addEventListener("DOMContentLoaded", function() {
-            document.body.oncopy = function() { return false; };
-            document.body.oncut = function() { return false; };
-            document.body.oncontextmenu = function() { return false; }; // Disables right-click
-            document.body.onselectstart = function() { return false; };
+            document.body.oncopy = document.body.oncut = 
+            document.body.oncontextmenu = document.body.onselectstart = () => false;
         });
-        window.onload = function() {
-            var forms = document.getElementsByTagName('form');
-            for (var i = 0; i < forms.length; i++) {
-                forms[i].reset(); // Reset form fields to default values
-            }
-        };
-        window.onload = function() {
-            var forms = document.getElementsByTagName('form');
-            for (var i = 0; i < forms.length; i++) {
-                forms[i].setAttribute('autocomplete', 'off'); // Disable autocomplete for the entire form
-                
-                var inputs = forms[i].getElementsByTagName('input');
-                for (var j = 0; j < inputs.length; j++) {
-                    inputs[j].setAttribute('autocomplete', 'off'); // Disable autocomplete for each input field
-                }
-            }
-        };
-            // Camera Permission Overlay Script
-document.addEventListener("DOMContentLoaded", function () {
-    // Get references to DOM elements
-    const cameraPermissionOverlay = document.getElementById('cameraPermissionOverlay');
-    const videoElement = document.getElementById('video');
-    const grantAccessButton = document.querySelector('.overlay-content .btn-primary');
-    const denyAccessButton = document.querySelector('.overlay-content .btn-secondary');
-
-    // Show the camera permission overlay
-    function showCameraPermissionOverlay() {
-        cameraPermissionOverlay.style.display = 'flex';
-    }
-
-    // Grant camera access
-    async function grantCameraAccess() {
-        try {
-            // Request camera access
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-            cameraPermissionOverlay.style.display = 'none'; // Hide the overlay
-            videoElement.srcObject = stream; // Set the video source to the camera stream
-            videoElement.play(); // Start playing the video
-            console.log("Camera access granted!");
-        } catch (error) {
-            console.error("Error accessing camera:", error);
-            alert("Camera permission denied! Please allow camera access.");
-        }
-    }
-
-    // Deny camera access
-    function denyCameraAccess() {
-        cameraPermissionOverlay.style.display = 'none'; // Hide the overlay
-        alert("Camera access is required. Please refresh the page to try again.");
-    }
-
-    // Attach event listeners to buttons
-    grantAccessButton.addEventListener('click', grantCameraAccess);
-    denyAccessButton.addEventListener('click', denyCameraAccess);
-
-    // Example: Trigger the overlay when a button is clicked
-    const startVerificationButton = document.getElementById('startVerificationButton');
-    if (startVerificationButton) {
-        startVerificationButton.addEventListener('click', showCameraPermissionOverlay);
-    }
-});
-        
     </script>
 </body>
 </html>
