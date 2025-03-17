@@ -1,232 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Guard - Subscription</title>
-  <link rel="icon" type="image/png" href="logo.png">
-  <style>
-    /* General Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    /* Fixed Order Now Button */
-    .order-now-btn {
-      position: fixed;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      background-color: #007bff;
-      color: #fff;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-      z-index: 1000;
-    }
-  
-    .order-now-btn:hover {
-      background-color: #0056b3;
-      transform: translateY(-50%) scale(1.05);
-    }
-  
-    body {
-      font-family: Arial, sans-serif;
-      color: #333;
-      background: #f4f4f4;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-    }
-  
-    /* Header */
-    .header {
-      text-align: center;
-      padding: 2rem;
-      background-color: #007bff;
-      color: #fff;
-      width: 100%;
-    }
-  
-    .header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-  
-    .header p {
-      font-size: 1.2rem;
-    }
-  
-    /* Subscription Container */
-    .subscription-container {
-      display: grid;
-      align-items: center;
-      justify-content: center;
-      margin-top: 2rem;
-      padding: 2rem;
-      width: 100%;
-      
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>QR Guard - Subscription</title>
+    <link rel="icon" type="image/png" href="logo.png" />
+    <style>
+      /* Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    /* Pricing Table */
-    .pricing-table {
-      border-collapse: collapse;
-      margin: 1rem 0;
-      width: 100%;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      background: #fff;
-    }
-    
-    .pricing-table th, .pricing-table td {
-      padding: 12px;
-      
-      border: 1px solid #ddd;
-    }
+      body {
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        color: #2d3436;
+        background: #f8f9fa;
+        line-height: 1.6;
+      }
 
-    .pricing-table th {
-      background-color: #007bff;
-      color: white;
-    }
+      /* Header */
+      .header {
+        text-align: center;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
 
-    .pricing-table tr:hover {
-      background-color: #f1f1f1;
-    }
+      .header h1 {
+        font-size: clamp(1.8rem, 5vw, 2.5rem);
+        margin-bottom: 0.75rem;
+      }
 
-    /* Button Container */
-    .button-container {
-        position: relative;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 1rem;
-      
-    }
+      .header p {
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
+        opacity: 0.9;
+      }
 
-    /* Button Styles */
-    .button {
-      padding: 0.8rem 1.5rem;
-      color: #fff;
-      background-color: #007bff;
-      border: none;
-      border-radius: 5px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.2s;
-    }
+      /* Main Container */
+      .main-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
 
-    .button:hover {
-      background-color: #0056b3;
-      transform: translateY(-2px);
-    }
-  
-    /* Footer */
-    .footer {
-      text-align: center;
-      padding: 1rem;
-      font-size: 0.9rem;
-      color: #666;
-      width: 100%;
-      background: #fff;
-      position: relative;
-      bottom: 0;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .button-container {
-        flex-direction: column;
-        align-items: center;
+      /* Pricing Table */
+      .pricing-wrapper {
+        overflow-x: auto;
+        margin: 2rem 0;
+        -webkit-overflow-scrolling: touch;
       }
 
       .pricing-table {
         width: 100%;
+        min-width: 600px;
+        border-collapse: collapse;
+        background: white;
+        box-shadow: 0 1px 15px rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
       }
-    }
-  </style>
-</head>
-<body>
-  <button class="order-now-btn" onclick="window.location.href='pay.html'">Order Now</button>
 
-  <header class="header">
-    <h1>QR Guard</h1>
-    <p>Secure your assets with personalized QR codes and easy subscription options.</p>
-  </header>
+      .pricing-table th,
+      .pricing-table td {
+        padding: 1.2rem;
+        text-align: center;
+        border-bottom: 1px solid #e9ecef;
+      }
 
-  <main class="subscription-container">
-    <table class="pricing-table">
-        <thead>
-          <tr>
-            <th>Service/Plan</th>
-            <th>Price</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colspan="3"><strong>QR Card Services</strong></td>
-          </tr>
-          <tr>
-            <td>Single QR Card Purchase</td>
-            <td>₹49</td>
-            <td>One-time purchase for a basic personalized QR card with essential vehicle monitoring features.</td>
-          </tr>
-          <tr>
-            <td>Bulk QR Card Purchase</td>
-            <td>₹49 per card</td>
-            <td>Discounted price for orders of 10 or more QR cards for families or businesses.</td>
-          </tr>
-          <tr>
-            <td>Custom QR Card Design</td>
-            <td>₹199</td>
-            <td>Custom-designed QR cards for businesses, allowing branding opportunities.</td>
-          </tr>
-          <tr>
-        </tbody>
-      </table>
-      
+      .pricing-table th {
+        background: #007bff;
+        color: white;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
 
-    <section class="button-container">
-      <button class="button" onclick="window.location.href='pay.html'">Order QR Code</button>
-      <button class="button" onclick="alert('Subscribe Now page coming soon!')">Alert Subscription</button>
-    </section>
-  </main>
+      .pricing-table tr:first-child {
+        background: #fff3cd;
+      }
 
-  <footer class="footer">
-    <p>&copy; 2024 QR Guard Technologies- All Rights Reserved</p>
-  </footer>
-  <script>
-    
-    document.addEventListener("DOMContentLoaded", function() {
-      document.body.oncopy = function() { return false; };
-      document.body.oncut = function() { return false; };
-      document.body.oncontextmenu = function() { return false; }; // Disables right-click
-      document.body.onselectstart = function() { return false; };
-  });
-  window.onload = function() {
-    var forms = document.getElementsByTagName('form');
-    for (var i = 0; i < forms.length; i++) {
-        forms[i].reset(); // Reset form fields to default values
-    }
-};
-window.onload = function() {
-    var forms = document.getElementsByTagName('form');
-    for (var i = 0; i < forms.length; i++) {
-        forms[i].setAttribute('autocomplete', 'off'); // Disable autocomplete for the entire form
-        
-        var inputs = forms[i].getElementsByTagName('input');
-        for (var j = 0; j < inputs.length; j++) {
-            inputs[j].setAttribute('autocomplete', 'off'); // Disable autocomplete for each input field
+      .pricing-table tr:nth-child(even) {
+        background: #f8f9fa;
+      }
+
+      .pricing-table tr:hover {
+        background: #f1f3f5;
+      }
+
+      /* Fixed Button Container */
+      .fixed-button-container {
+        position: fixed;
+        bottom: 1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 1rem;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        backdrop-filter: blur(8px);
+        max-width: 95%;
+      }
+
+      .button {
+        padding: 0.8rem 1.75rem;
+        border: none;
+        border-radius: 30px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex: 1;
+        white-space: nowrap;
+      }
+
+      .button.primary {
+        background: #007bff;
+        color: white;
+      }
+
+      .button.secondary {
+        background: #28a745;
+        color: white;
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      /* About Section */
+      .about-section {
+        margin: 3rem 0;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .about-section h2 {
+        color: #007bff;
+        margin-bottom: 1.5rem;
+        font-size: 1.75rem;
+      }
+
+      .about-section p {
+        color: #495057;
+        font-size: 1rem;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        padding: 2rem 1rem;
+        background: #007bff;
+        color: white;
+        margin-top: 4rem;
+      }
+
+      /* Mobile Styles */
+      @media (max-width: 768px) {
+        .main-container {
+          padding: 0.5rem;
         }
-    }
-};
-    
-  </script>
-</body>
+
+        .pricing-table th,
+        .pricing-table td {
+          padding: 1rem;
+          font-size: 0.9rem;
+        }
+
+        .fixed-button-container {
+          bottom: 1rem;
+          padding: 0.75rem;
+          gap: 0.75rem;
+        }
+
+        .button {
+          padding: 0.7rem 1.2rem;
+          font-size: 0.9rem;
+        }
+
+        .about-section {
+          padding: 1.5rem;
+          margin: 2rem 0;
+        }
+
+        .about-section h2 {
+          font-size: 1.5rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header {
+          padding: 1.5rem 1rem;
+        }
+
+        .pricing-table {
+          min-width: 100%;
+        }
+
+        .fixed-button-container {
+          width: 100%;
+          border-radius: 0;
+          bottom: 0;
+          flex-direction: column;
+          gap: 0.5rem;
+          padding: 1rem;
+          box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .button {
+          width: 100%;
+          padding: 1rem;
+        }
+
+        .about-section {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <h1>QR Guard</h1>
+      <p>
+        Secure your assets with personalized QR codes and easy subscription
+        options.
+      </p>
+    </header>
+
+    <div class="main-container">
+      <div class="pricing-wrapper">
+        <table class="pricing-table">
+          <thead>
+            <tr>
+              <th>Plan Duration</th>
+              <th>Total Price</th>
+              <th>Monthly Cost</th>
+              <th>Special Offer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Pilot Testing (1 Month)</td>
+              <td>₹59</td>
+              <td>₹59</td>
+              <td>Limited Time Offer ✅</td>
+            </tr>
+            <tr>
+              <td>1 Month</td>
+              <td>₹129</td>
+              <td>₹129</td>
+              <td>First Month FREE ✅</td>
+            </tr>
+            <tr>
+              <td>3 Months</td>
+              <td>₹348</td>
+              <td>₹116</td>
+              <td>Save ₹39</td>
+            </tr>
+            <tr>
+              <td>6 Months</td>
+              <td>₹658</td>
+              <td>₹110</td>
+              <td>Save ₹116</td>
+            </tr>
+            <tr>
+              <td>1 Year</td>
+              <td>₹1238</td>
+              <td>₹103</td>
+              <td>Save ₹310</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="fixed-button-container">
+        <button
+          class="button primary"
+          onclick="window.location.href='pay.html'"
+        >
+          Order Now
+        </button>
+        <button
+          class="button secondary"
+          onclick="alert('Contact: qrguardprivatelimited@gmail.com\nPhone: 9258902271')"
+        >
+          Contact for Subscription
+        </button>
+      </div>
+
+      <section class="about-section">
+        <h2>About QR Guard Technologies</h2>
+        <p>
+          QR Guard offers an innovative approach to vehicle security and
+          emergency response through smart QR code technology. Our system
+          empowers vehicle owners with instant, reliable communication during
+          critical situations — from illegal parking alerts to emergency
+          assistance. With advanced features like incident verification via AI,
+          real-time notifications, and effortless user-vehicle connection, QR
+          Guard ensures safety, convenience, and peace of mind. Built for modern
+          challenges, our solution is designed to adapt, ensuring seamless
+          performance in both urban and remote environments.
+        </p>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <p>&copy; 2024 QR Guard Pvt. Ltd. - All Rights Reserved</p>
+    </footer>
+  </body>
 </html>
