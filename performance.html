@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRGuard Team Performance Analysis</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.5;
+            padding: 2rem 1rem;
+        }
+
+        .performance-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .performance-header {
+            padding: 1.5rem;
+            background: #3b82f6;
+            color: white;
+        }
+
+        .performance-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            padding: 1.5rem;
+        }
+
+        .performance-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .performance-table th,
+        .performance-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .performance-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+            color: #64748b;
+        }
+
+        .performance-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .performance-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .completion-rate {
+            font-weight: 600;
+            color: #3b82f6;
+        }
+
+        .unassigned-row {
+            background: #fff1f2;
+        }
+
+        .unassigned-row:hover {
+            background: #ffe4e6;
+        }
+
+        .unassigned-row .completion-rate {
+            color: #ef4444;
+        }
+
+        .performance-remark {
+            max-width: 300px;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+
+            .performance-header {
+                padding: 1rem;
+            }
+
+            .performance-header h1 {
+                font-size: 1.25rem;
+            }
+
+            .table-container {
+                padding: 1rem;
+            }
+
+            .performance-table th,
+            .performance-table td {
+                padding: 0.5rem 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .performance-table th {
+                font-size: 0.75rem;
+            }
+
+            .performance-table td {
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="performance-container">
+        <div class="performance-header">
+            <h1>Team Performance Overview</h1>
+        </div>
+        <div class="table-container">
+            <table class="performance-table">
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Assigned</th>
+                        <th>Done</th>
+                        <th>Pending</th>
+                        <th>Completion</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Pranjal</td>
+                        <td>12</td>
+                        <td>9</td>
+                        <td>3</td>
+                        <td class="completion-rate">75%</td>
+                        <td class="performance-remark">Excellent multitasking across dev, admin, and strategy.</td>
+                    </tr>
+                    <tr>
+                        <td>Radhika</td>
+                        <td>3</td>
+                        <td>1</td>
+                        <td>2</td>
+                        <td class="completion-rate">33%</td>
+                        <td class="performance-remark">Needs faster progress on partnerships & data work.</td>
+                    </tr>
+                    <tr>
+                        <td>Anisha</td>
+                        <td>4</td>
+                        <td>3</td>
+                        <td>1</td>
+                        <td class="completion-rate">75%</td>
+                        <td class="performance-remark">Strong output on research and data collection.</td>
+                    </tr>
+                    <tr>
+                        <td>Vishesh</td>
+                        <td>6</td>
+                        <td>3</td>
+                        <td>3</td>
+                        <td class="completion-rate">50%</td>
+                        <td class="performance-remark">Solid delivery on technical & print tasks, marketing needs push.</td>
+                    </tr>
+                    <tr>
+                        <td>Rishiraj</td>
+                        <td>5</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td class="completion-rate">80%</td>
+                        <td class="performance-remark">Great execution on outreach, pitching, approvals.</td>
+                    </tr>
+                    <tr class="unassigned-row">
+                        <td>TBD (Unassigned)</td>
+                        <td>5</td>
+                        <td>0</td>
+                        <td>5</td>
+                        <td class="completion-rate">0%</td>
+                        <td class="performance-remark">Critical tasks like testing, analysis still unassigned.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
