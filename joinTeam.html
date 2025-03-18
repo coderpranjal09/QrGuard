@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QRGuard Careers - Vehicle Security Innovators</title>
+  <style>
+    :root {
+      --primary-color: #1a237e;
+      --secondary-color: #0d47a1;
+      --accent-color: #e65100;
+      --background-color: #f8f9fa;
+      --text-color: #212529;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 4rem 2rem;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .hero-section h1 {
+      font-size: 2.8rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    .perks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin: 3rem 0;
+    }
+
+    .perk-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    /* Job Cards */
+    .job-card {
+      background: white;
+      border-left: 4px solid var(--accent-color);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .job-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .job-title {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin: 0;
+    }
+
+    .role-tag {
+      background: var(--accent-color);
+      color: white;
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+
+    .apply-button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .apply-button:hover {
+      background: var(--secondary-color);
+    }
+
+    /* Form Page Styling */
+    .form-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: var(--background-color);
+      padding: 20px;
+    }
+
+    .form-content {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.25);
+    }
+
+    .submit-button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    .submit-button:hover {
+      background: var(--secondary-color);
+    }
+
+    /* Success Page Styling */
+    .success-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: var(--background-color);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .success-content {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .success-icon {
+      font-size: 3rem;
+      color: var(--accent-color);
+      margin-bottom: 20px;
+    }
+
+    .success-button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    .success-button:hover {
+      background: var(--secondary-color);
+    }
+  </style>
+</head>
+<body>
+  <!-- Main Page -->
+  <div id="mainPage">
+    <div class="hero-section">
+      <h1>🚀 Join QRGuard's Security Revolution</h1>
+      <p>Pioneering QR-based Vehicle Protection Systems</p>
+      
+      <div class="perks-grid">
+        <div class="perk-card">
+          <h3>Industry-Leading Training</h3>
+          <p>Master cutting-edge security tech</p>
+        </div>
+        <div class="perk-card">
+          <h3>Certification Benefits</h3>
+          <p>MSME & StartupIndia recognized</p>
+        </div>
+        <div class="perk-card">
+          <h3>Growth Potential</h3>
+          <p>Fast-track leadership opportunities</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Operations Executive Card -->
+      <div class="job-card">
+        <div class="job-header">
+          <div>
+            <h2 class="job-title">Operations Executive</h2>
+            <span class="role-tag">On-site / Remote</span>
+          </div>
+          <button class="apply-button" data-role="Operations Executive" onclick="openForm()">Apply Now</button>
+        </div>
+        <div>
+          <h3>Core Responsibilities</h3>
+          <ul>
+            <li>Manage daily security system operations</li>
+            <li>Coordinate field installations</li>
+            <li>Quality assurance checks</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Add other role cards similarly -->
+    </div>
+  </div>
+
+  <!-- Form Page (Hidden by Default) -->
+  <div id="formPage" class="form-page" style="display: none;">
+    <div class="form-content">
+      <h2>Apply for <span id="selectedRole"></span></h2>
+      <form id="applicationForm">
+        <div class="form-group">
+          <label for="role">Select Role</label>
+          <select id="role" required>
+            <option value="">Choose a role</option>
+            <option value="Operations Executive">Operations Executive</option>
+            <option value="Marketing Associate">Marketing Associate</option>
+            <option value="Tech Support Learner">Tech Support Learner</option>
+            <option value="Growth Strategist">Growth Strategist</option>
+            <option value="Partnership Manager">Partnership Manager</option>
+            <option value="Content Creator">Content Creator</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Mobile Number</label>
+          <input type="tel" id="phone" pattern="[0-9]{10}" required>
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city" required>
+        </div>
+        <div class="form-group">
+          <label>Gender</label>
+          <div>
+            <label><input type="radio" name="gender" value="Male" required> Male</label>
+            <label><input type="radio" name="gender" value="Female"> Female</label>
+            <label><input type="radio" name="gender" value="Other"> Other</label>
+          </div>
+        </div>
+        <button type="submit" class="submit-button">Submit Application</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Success Page (Hidden by Default) -->
+  <div id="successPage" class="success-page" style="display: none;">
+    <div class="success-content">
+      <div class="success-icon">🎉</div>
+      <h2>Application Submitted!</h2>
+      <p>Thank you for applying to QRGuard. We'll review your application and contact you shortly.</p>
+      <button class="success-button" onclick="goBack()">Return to Careers</button>
+    </div>
+  </div>
+
+  <script>
+    // Open Form Page
+    function openForm() {
+      document.getElementById('mainPage').style.display = 'none';
+      document.getElementById('formPage').style.display = 'flex';
+    }
+
+    // Handle Form Submission
+    document.getElementById('applicationForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const formData = {
+        role: document.getElementById('role').value,
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        city: document.getElementById('city').value,
+        gender: document.querySelector('input[name="gender"]:checked').value
+      };
+
+      const emailBody = `Application for ${formData.role}:
+        Name: ${formData.name}
+        Email: ${formData.email}
+        Phone: ${formData.phone}
+        City: ${formData.city}
+        Gender: ${formData.gender}`;
+
+      const mailtoLink = `mailto:qrguardprivatelimited@gmail.com?subject=${encodeURIComponent(formData.role)} Application&body=${encodeURIComponent(emailBody)}`;
+
+      // Open email in new tab
+      window.open(mailtoLink, '_blank');
+
+      // Show success page
+      document.getElementById('formPage').style.display = 'none';
+      document.getElementById('successPage').style.display = 'flex';
+    });
+
+    // Go Back to Main Page
+    function goBack() {
+      document.getElementById('successPage').style.display = 'none';
+      document.getElementById('mainPage').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
