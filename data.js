@@ -45,4 +45,5 @@ const vehicleData = [
     { vehicleID: "3456IJ", model: "Kia Sonet", vehicleNo: "GJ8HIJ3456", driverName: "Shubham Yadav", ownerName: "Nikita Desai", driverMobile: "9423123456" },
     { vehicleID: "7890KL", model: "Toyota Etios", vehicleNo: "UP9JKL7890", driverName: "Mahesh Nair", ownerName: "Ankit Trivedi", driverMobile: "9409123456" },
     { vehicleID: "7891AB", model: "Hyundai i20", vehicleNo: "MN01X3927", driverName: "Lenin Sarungbam", ownerName: "Lenin Sarungbam", driverMobile: "9863006147" },
+     { vehicleID: "1223CB", model: "Mahindra Bolero", vehicleNo: "UK07GE0029", driverName: "Bipin", ownerName: "Rto Tehri", driverMobile: "8791250291" },
 ];
