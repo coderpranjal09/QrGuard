@@ -1076,7 +1076,7 @@ body {
     display: flex;
     align-items: center;
     width: max-content; /* Allow container to expand */
-    animation: marquee 20s linear infinite; /* Marquee animation */
+    animation: marquee 28s linear infinite; /* Marquee animation */
 }
 
 .partner-logo {
