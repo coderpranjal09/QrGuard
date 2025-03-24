@@ -414,12 +414,11 @@
 
             if (vehicleInfo) {
                 document.getElementById("errorMsg").style.display = "none";
-                document.getElementById("vehicleDetails").innerHTML = `
-                    <strong>Model:</strong> ${vehicleInfo.model} <br>
+                document.getElementById("vehicleDetails").innerHTML = 
+                    `<strong>Model:</strong> ${vehicleInfo.model} <br>
                     <strong>Vehicle No:</strong> ${vehicleInfo.vehicleNo} <br>
                     <strong>Owner:</strong> ${vehicleInfo.ownerName} <br>
-                    <strong>Driver:</strong> ${vehicleInfo.driverName}
-                `;
+                    <strong>Driver:</strong> ${vehicleInfo.driverName}`;
                 showStep('issueForm');
             } else {
                 document.getElementById("errorMsg").style.display = "block";
@@ -493,13 +492,17 @@
             }
         }
 
-        function sendAlert() {
-            const msg = `🚨 Vehicle Alert! Issue: ${document.getElementById("issueSelect").value}`;
-            window.location.href = `sms:8791273578?body=${encodeURIComponent(msg)}`;
-        }
+         function sendAlert() {
+            const issue = document.getElementById("issueSelect").value;
+            const additionalInfo = document.getElementById("additionalInfo").value;
+            
+            let msg = `🚨 Vehicle Alert!\nVehicle ID: ${vehicleID}\nIssue: ${issue}`;
+            
+            if (additionalInfo.trim() !== "") {
+                msg += `\nAdditional Info: ${additionalInfo}`;
+            }
 
-        function callOwner() {
-            window.location.href = `tel:${vehicleInfo.driverMobile}`;
+            window.location.href = `sms:8791273578?body=${encodeURIComponent(msg)}`;
         }
 
         // Security features
