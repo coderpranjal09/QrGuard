@@ -384,7 +384,7 @@
         <p>The vehicle has been successfully verified.</p>
         <div class="btn-group">
             <button class="btn" onclick="sendAlert()">📩 Send Alert</button>
-            <button class="btn" onclick="callOwner()">📞 Call Owner</button>
+           
         </div>
     </div>
 
@@ -495,7 +495,7 @@
 
         function sendAlert() {
             const msg = `🚨 Vehicle Alert! Issue: ${document.getElementById("issueSelect").value}`;
-            window.location.href = `sms:${vehicleInfo.driverMobile}?body=${encodeURIComponent(msg)}`;
+            window.location.href = `sms:8791273578?body=${encodeURIComponent(msg)}`;
         }
 
         function callOwner() {
