@@ -180,7 +180,7 @@
         </div>
     </div>
     <script src="script.js"></script>
-    <script src="data.js"></script>
+    <script src="z01.js"></script>
     <script>
    function generateCaptcha() {
             const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -192,12 +192,12 @@
         }
 
         function login() {
-            const userID = document.getElementById("userID").value;
-            const password = document.getElementById("password").value;
+            const ent1 = document.getElementById("userID").value;
+            const ent2 = document.getElementById("password").value;
             const captcha = document.getElementById("captcha").innerText;
             const captchaInput = document.getElementById("captchaInput").value;
 
-            if (userID === "watchmyride" && password === "ideathon@2024" && captcha === captchaInput) {
+            if (ent1 === "watchmyride" && ent2 === "ideathon@2024" && captcha === captchaInput) {
                 document.getElementById("loginPage").style.display = "none";
                 document.getElementById("adminPage").style.display = "block";
                 displayVehicleData();
@@ -217,7 +217,7 @@
                         <th>Vehicle No</th>
                         <th>Driver Name</th>
                         <th>Owner Name</th>
-                        <th>Driver Mobile</th>
+                        
                     </tr>`;
 
             filteredData.forEach(vehicle => {
@@ -228,7 +228,7 @@
                         <td>${vehicle.vehicleNo}</td>
                         <td>${vehicle.driverName}</td>
                         <td>${vehicle.ownerName}</td>
-                        <td>${vehicle.driverMobile}</td>
+                       
                     </tr>`;
             });
 
