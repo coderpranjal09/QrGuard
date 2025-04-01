@@ -3,244 +3,512 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vehicle Info Verification</title>
+    <title>Vehicle Management System</title>
+    <script src="z01.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* General Reset */
+        /* Base Styles */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            color: #2d3748;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background-color: #f0f4f8;
-            color: #333;
+            position: relative;
         }
 
-        /* Container */
-        .container {
+        /* Alert System */
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
             width: 90%;
             max-width: 400px;
-            text-align: center;
-            padding: 25px;
-            background-color: #fff;
+        }
+
+        .alert {
+            padding: 15px 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            font-size: 1.6rem;
-            color: #007bff;
-            margin-bottom: 15px;
-        }
-
-        h2 {
-            font-size: 1.3rem;
-            color: #555;
             margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideIn 0.3s ease-out;
+            opacity: 1;
+            transition: opacity 0.3s;
         }
 
-        .form-section, .vehicle-details {
-            margin: 20px 0;
-            display: none;
+        .alert.hide {
+            opacity: 0;
         }
 
-        /* Input and Button Styling */
-        input[type="text"] {
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-close {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding-left: 15px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-100%) translateX(-50%); }
+            to { transform: translateY(0) translateX(-50%); }
+        }
+
+        /* Main Container */
+        .main-container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 2rem auto;
+            position: relative;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 450px;
+            margin: 0 auto;
+            transition: transform 0.3s ease;
+        }
+
+        .section-title {
+            color: #2b6cb0;
+            font-size: 1.8rem;
+            margin-bottom: 1.8rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-input {
             width: 100%;
-            padding: 10px;
-            margin: 8px 0;
+            padding: 0.9rem 1.2rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
             font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            transition: border-color 0.2s ease;
         }
 
-        input[type="text"]:focus {
-            border-color: #007bff;
+        .form-input:focus {
+            border-color: #4299e1;
             outline: none;
         }
 
-        .action-btn {
-            padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
+        .captcha-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #ebf8ff;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin: 1.5rem 0;
         }
 
-        .action-btn:hover {
-            background-color: #0056b3;
+        .captcha-display {
+            font-size: 1.4rem;
+            letter-spacing: 0.2em;
+            padding: 0.5rem 1rem;
+            background: #bee3f8;
+            border-radius: 0.5rem;
+            flex-grow: 1;
+            text-align: center;
         }
 
         .refresh-btn {
+            background: none;
             border: none;
-            color: #007bff;
             font-size: 1.2rem;
+            color: #4299e1;
             cursor: pointer;
-            padding: 0 8px;
-            background-color: white;
+            padding: 0.5rem;
+            transition: transform 0.2s ease;
         }
 
-        .captcha-section {
+        .refresh-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        .vehicle-card {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin: 1.5rem 0;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.8rem 0;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .detail-label {
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .parking-controls {
+            display: grid;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .action-btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin: 12px 0;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
-        .captcha-section span {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #555;
-            padding: 8px 12px;
-            background-color: #e0e7ff;
-            border-radius: 4px;
-            letter-spacing: 3px;
+        .btn-primary {
+            background: #4299e1;
+            color: white;
         }
 
-        /* Card Style for Vehicle Details */
-        .vehicle-card {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            text-align: left;
-            margin-top: 10px;
+        .btn-primary:hover {
+            background: #3182ce;
         }
 
-        .vehicle-card div {
-            margin-bottom: 8px;
+        .btn-success {
+            background: #48bb78;
+            color: white;
         }
 
-        .vehicle-card div span {
-            font-weight: bold;
-            color: #007bff;
+        .btn-success:hover {
+            background: #38a169;
         }
 
-        /* Responsive Design */
-        @media (max-width: 500px) {
-            .container {
-                width: 100%;
-                padding: 15px;
-            }
+        .btn-back {
+            background: #718096;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #4a5568;
+        }
+
+        #parkingMap {
+            width: 100%;
+            height: 350px;
+            border-radius: 1rem;
+            margin: 1.5rem 0;
+            border: 2px solid #e2e8f0;
+        }
+
+        .loader {
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4299e1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .mt-2 {
+            margin-top: 2rem;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Vehicle Information Verification</h1>
-
-        <!-- Vehicle ID and Captcha Form -->
-        <div id="vehicleIDForm" class="form-section">
-            <input type="text" id="vehicleIDInput" placeholder="Enter Vehicle ID" required>
-            
-            <!-- Captcha -->
-            <div class="captcha-section">
-                <input type="text" id="captchaInput" placeholder="Enter Captcha" required>
-                <span id="captcha"></span>
-                <button onclick="generateCaptcha()" class="refresh-btn">↻</button>
+    <div class="alert-container" id="alertContainer"></div>
+    
+    <div class="main-container">
+        <!-- Verification Section -->
+        <div class="auth-container" id="authSection">
+            <h2 class="section-title">Vehicle Verification</h2>
+            <div class="input-group">
+                <input type="text" 
+                       class="form-input" 
+                       id="vehicleIDInput" 
+                       placeholder="Enter Vehicle ID">
             </div>
-            <button onclick="fetchVehicleData()" class="action-btn">Submit</button>
+            <div class="captcha-container">
+                <input type="text" 
+                       class="form-input" 
+                       id="captchaInput" 
+                       placeholder="Enter Captcha">
+                <div class="captcha-display" id="captcha"></div>
+                <button class="refresh-btn" onclick="generateCaptcha()">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            <button class="action-btn btn-primary" onclick="fetchVehicleData()">
+                Verify Vehicle
+            </button>
         </div>
 
         <!-- Vehicle Details Section -->
-        <div id="vehicleDetails" class="vehicle-details">
-            <h2 id="welcomeMessage"></h2>
-            <div id="vehicleCardContainer"></div>
-            <button onclick="logout()" class="action-btn">Logout</button>
+        <div class="auth-container hidden" id="vehicleSection">
+            <h2 class="section-title" id="welcomeMessage"></h2>
+            <div class="vehicle-card">
+                <div class="detail-item">
+                    <span class="detail-label">Vehicle ID:</span>
+                    <span class="detail-value" id="detailId"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Model:</span>
+                    <span class="detail-value" id="detailModel"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Vehicle No:</span>
+                    <span class="detail-value" id="detailNumber"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Driver:</span>
+                    <span class="detail-value" id="detailDriver"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Owner:</span>
+                    <span class="detail-value" id="detailOwner"></span>
+                </div>
+            </div>
+            <div class="parking-controls">
+                <button class="action-btn btn-success" onclick="showParkingSection()">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Parking Management
+                </button>
+                <button class="action-btn btn-back" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Parking Management Section -->
+        <div class="auth-container hidden" id="parkingSection">
+            <h2 class="section-title">Parking Management</h2>
+            <div class="parking-controls">
+                <button class="action-btn btn-success" id="parkingAction" onclick="saveParkingLocation()">
+                    <i class="fas fa-car"></i>
+                    Mark Parking Spot
+                </button>
+                <button class="action-btn btn-primary" onclick="findMyCar()">
+                    <i class="fas fa-map-marked-alt"></i>
+                    Locate My Vehicle
+                </button>
+            </div>
+            <div class="loader" id="parkingLoader"></div>
+            <iframe id="parkingMap" class="hidden"></iframe>
+            <button class="action-btn btn-back mt-2" onclick="showVehicleSection()">
+                <i class="fas fa-arrow-left"></i>
+                Back to Vehicle Details
+            </button>
         </div>
     </div>
 
-    <script src="script.js"></script>
-    <script src="z01.js"></script>
     <script>
+        // Custom Alert System
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <span>${message}</span>
+                <button class="alert-close" onclick="this.parentElement.classList.add('hide')">&times;</button>
+            `;
+            
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.classList.add('hide');
+                setTimeout(() => alert.remove(), 300);
+            }, 3000);
+        }
+
+        // Captcha Management
         let captchaText = "";
 
         function generateCaptcha() {
             const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            captchaText = Array.from({ length: 5 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+            captchaText = Array.from({ length: 5 }, () => 
+                chars[Math.floor(Math.random() * chars.length)]
+            ).join("");
             document.getElementById("captcha").textContent = captchaText;
         }
 
+        // Vehicle Verification
         function fetchVehicleData() {
-            const vehicleIDInput = document.getElementById("vehicleIDInput").value;
+            const vehicleID = document.getElementById("vehicleIDInput").value.trim().toUpperCase();
             const captchaInput = document.getElementById("captchaInput").value;
 
             if (captchaInput !== captchaText) {
-                alert("Incorrect captcha. Please try again.");
+                showAlert("Invalid captcha. Please try again.", 'error');
                 generateCaptcha();
                 return;
             }
 
-            const vehicleInfo = vehicleData.find(vehicle => vehicle.vehicleID === vehicleIDInput);
+            const foundVehicle = vehicleData.find(vehicle => 
+                vehicle.vehicleID.toUpperCase() === vehicleID
+            );
 
-            if (vehicleInfo) {
-                document.getElementById("welcomeMessage").textContent = `Welcome, ${vehicleInfo.ownerName}`;
-                document.getElementById("vehicleIDForm").style.display = "none";
-                document.getElementById("vehicleDetails").style.display = "block";
-
-                const vehicleCard = `
-                    <div class="vehicle-card">
-                        <div><span>Vehicle ID:</span> ${vehicleInfo.vehicleID}</div>
-                        <div><span>Model:</span> ${vehicleInfo.model}</div>
-                        <div><span>Vehicle No:</span> ${vehicleInfo.vehicleNo}</div>
-                        <div><span>Driver Name:</span> ${vehicleInfo.driverName}</div>
-                        <div><span>Owner Name:</span> ${vehicleInfo.ownerName}</div>
-                    </div>
-                `;
-                document.getElementById("vehicleCardContainer").innerHTML = vehicleCard;
+            if (foundVehicle) {
+                showVehicleDetails(foundVehicle);
+                showAlert("Login successful!", 'success');
             } else {
-                alert("Invalid Vehicle ID. Please try again.");
+                showAlert("Vehicle not found. Please check the ID.", 'error');
+                generateCaptcha();
             }
         }
 
+        function showVehicleDetails(vehicle) {
+            document.getElementById("authSection").classList.add("hidden");
+            document.getElementById("vehicleSection").classList.remove("hidden");
+            
+            document.getElementById("welcomeMessage").textContent = `Welcome, ${vehicle.ownerName}`;
+            document.getElementById("detailId").textContent = vehicle.vehicleID;
+            document.getElementById("detailModel").textContent = vehicle.model;
+            document.getElementById("detailNumber").textContent = vehicle.vehicleNo;
+            document.getElementById("detailDriver").textContent = vehicle.driverName;
+            document.getElementById("detailOwner").textContent = vehicle.ownerName;
+        }
+
+        // Parking Management
+        function showParkingSection() {
+            document.getElementById("vehicleSection").classList.add("hidden");
+            document.getElementById("parkingSection").classList.remove("hidden");
+            updateParkingButton();
+        }
+
+        function showVehicleSection() {
+            document.getElementById("parkingSection").classList.add("hidden");
+            document.getElementById("vehicleSection").classList.remove("hidden");
+        }
+
+        function updateParkingButton() {
+            const parkingBtn = document.getElementById('parkingAction');
+            const locationData = JSON.parse(localStorage.getItem("parkingLocation"));
+            
+            if (locationData && Date.now() < locationData.expiry) {
+                parkingBtn.innerHTML = '<i class="fas fa-directions"></i> Get Directions';
+                parkingBtn.onclick = () => {
+                    window.open(`https://www.openstreetmap.org/directions?engine=osrm_car&route=${locationData.lat},${locationData.lng}`, '_blank');
+                };
+            } else {
+                parkingBtn.innerHTML = '<i class="fas fa-car"></i> Mark Parking Spot';
+                parkingBtn.onclick = saveParkingLocation;
+            }
+        }
+
+        function saveParkingLocation() {
+            const loader = document.getElementById("parkingLoader");
+            loader.style.display = "block";
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    loader.style.display = "none";
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    const locationData = {
+                        lat: lat,
+                        lng: lng,
+                        expiry: Date.now() + 86400000
+                    };
+                    
+                    localStorage.setItem("parkingLocation", JSON.stringify(locationData));
+                    showAlert('Parking location saved successfully!', 'success');
+                    updateParkingButton();
+                }, error => {
+                    loader.style.display = "none";
+                    showAlert('Error getting location. Please enable permissions.', 'error');
+                });
+            } else {
+                showAlert('Geolocation not supported', 'error');
+            }
+        }
+
+        function findMyCar() {
+            const locationData = JSON.parse(localStorage.getItem("parkingLocation"));
+            const mapFrame = document.getElementById("parkingMap");
+
+            if (!locationData || Date.now() > locationData.expiry) {
+                showAlert("No valid parking location found", 'error');
+                return;
+            }
+
+            mapFrame.classList.remove("hidden");
+            mapFrame.src = `https://www.openstreetmap.org/export/embed.html?bbox=${
+                locationData.lng-0.01},${locationData.lat-0.01},${
+                locationData.lng+0.01},${locationData.lat+0.01
+            }&layer=mapnik&marker=${locationData.lat},${locationData.lng}`;
+        }
+
+        // Logout Functionality
         function logout() {
-            document.getElementById("vehicleIDForm").style.display = "block";
-            document.getElementById("vehicleDetails").style.display = "none";
+            document.getElementById("vehicleSection").classList.add("hidden");
+            document.getElementById("authSection").classList.remove("hidden");
             document.getElementById("vehicleIDInput").value = "";
             document.getElementById("captchaInput").value = "";
+            showAlert("Logged out successfully!", 'success');
             generateCaptcha();
         }
 
-        // Mock vehicle data
-
-        // Initial captcha generation
+        // Initial Setup
         document.addEventListener("DOMContentLoaded", () => {
             generateCaptcha();
-            document.getElementById("vehicleIDForm").style.display = "block";
+            document.body.oncopy = document.body.oncut = 
+            document.body.oncontextmenu = document.body.onselectstart = () => false;
         });
-        document.addEventListener("DOMContentLoaded", function() {
-            document.body.oncopy = function() { return false; };
-            document.body.oncut = function() { return false; };
-            document.body.oncontextmenu = function() { return false; }; // Disables right-click
-            document.body.onselectstart = function() { return false; };
-        });
-        window.onload = function() {
-            var forms = document.getElementsByTagName('form');
-            for (var i = 0; i < forms.length; i++) {
-                forms[i].reset(); // Reset form fields to default values
-            }
-        };
-        window.onload = function() {
-            var forms = document.getElementsByTagName('form');
-            for (var i = 0; i < forms.length; i++) {
-                forms[i].setAttribute('autocomplete', 'off'); // Disable autocomplete for the entire form
-                
-                var inputs = forms[i].getElementsByTagName('input');
-                for (var j = 0; j < inputs.length; j++) {
-                    inputs[j].setAttribute('autocomplete', 'off'); // Disable autocomplete for each input field
-                }
-            }
-        };
-            
     </script>
 </body>
 </html>
