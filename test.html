@@ -4,62 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find My Car - QRGuard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
         button { padding: 10px 15px; font-size: 16px; cursor: pointer; margin: 10px; }
-        #mapFrame { width: 100%; height: 300px; margin-top: 20px; display: none; }
+        #map { width: 100%; height: 400px; margin-top: 20px; display: none; }
+        .loader { display: none; border: 6px solid #f3f3f3; border-top: 6px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-
     <h1>Find My Car - QRGuard</h1>
     <button onclick="saveParkingLocation()">🚗 Mark Parking Location</button>
     <button onclick="findMyCar()">📍 Find My Car</button>
-
-    <iframe id="mapFrame" frameborder="0" style="border:0;" allowfullscreen></iframe>
-
+    <div class="loader" id="loader"></div>
+    <div id="map"></div>
+    
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        // Function to save parking location as a link in localStorage
+        let map, marker;
+
         function saveParkingLocation() {
             if (navigator.geolocation) {
-                // Request for high accuracy location
+                document.getElementById("loader").style.display = "block";
                 navigator.geolocation.getCurrentPosition(position => {
+                    document.getElementById("loader").style.display = "none";
                     let lat = position.coords.latitude;
                     let lng = position.coords.longitude;
-                    let locationLink = `https://www.google.com/maps?q=${lat},${lng}&z=17&t=h`;
-                    console.log(`Parking Location Link: ${locationLink}`);
-
-                    // Store the link in localStorage with an expiry of 24 hours
-                    let expiryDate = new Date();
-                    expiryDate.setHours(expiryDate.getHours() + 24); // Set expiry to 24 hours from now
-                    let locationData = { link: locationLink, expiry: expiryDate.getTime() };
+                    let locationData = { lat, lng, expiry: Date.now() + 24 * 60 * 60 * 1000 };
                     localStorage.setItem("carLocation", JSON.stringify(locationData));
-
-                    alert("Parking location saved! It will be valid for 24 hours.");
-                }, error => {
-                    console.error("Error getting location:", error);
-                    alert("Error getting location. Please check your location permissions and try again.");
-                }, { 
-                    enableHighAccuracy: true,  // Request for more accurate location
-                    timeout: 10000,            // Timeout after 10 seconds
-                    maximumAge: 0             // Force a fresh location (no cached data)
-                });
+                    alert("Parking location saved!");
+                }, () => alert("Error getting location."), { enableHighAccuracy: true });
             } else {
-                alert("Geolocation is not supported by this browser.");
+                alert("Geolocation not supported.");
             }
         }
 
-        // Function to find car based on saved location link in localStorage
         function findMyCar() {
             let locationData = JSON.parse(localStorage.getItem("carLocation"));
-
             if (locationData && locationData.expiry > Date.now()) {
-                window.location.href = locationData.link; // Redirect to the saved location link
+                document.getElementById("map").style.display = "block";
+                if (!map) {
+                    map = L.map("map").setView([locationData.lat, locationData.lng], 17);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap'
+                    }).addTo(map);
+                } else {
+                    map.setView([locationData.lat, locationData.lng], 17);
+                }
+                if (marker) marker.remove();
+                marker = L.marker([locationData.lat, locationData.lng]).addTo(map)
+                    .bindPopup("Your Car is Here").openPopup();
             } else {
-                alert("No parking location found or the saved location has expired. Please mark your parking location first.");
+                alert("No saved parking location or it has expired.");
             }
         }
     </script>
-
 </body>
 </html>
