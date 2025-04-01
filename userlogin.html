@@ -470,7 +470,8 @@
             if (locationData && Date.now() < (locationData.timestamp + expiryTime)) {
                 parkingBtn.innerHTML = '<i class="fas fa-directions"></i> Get Directions';
                 parkingBtn.onclick = () => {
-                    window.open(`https://www.google.com/maps/dir/?api=1&destination=${locationData.lat},${locationData.lng}&travelmode=driving`, '_blank');
+                    window.open(`https://www.google.com/maps/dir/?api=1&destination=${locationData.lat},${locationData.lng}&travelmode=walking`, '_blank');
+
                 };
             } else {
                 parkingBtn.innerHTML = '<i class="fas fa-car"></i> Mark Parking Spot';
