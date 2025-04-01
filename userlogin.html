@@ -129,6 +129,7 @@
             outline: none;
         }
 
+        /* Improved Captcha for Mobile */
         .captcha-container {
             display: flex;
             align-items: center;
@@ -147,6 +148,22 @@
             border-radius: 0.5rem;
             flex-grow: 1;
             text-align: center;
+            min-width: 120px;
+        }
+
+        @media (max-width: 480px) {
+            .captcha-container {
+                flex-direction: column;
+            }
+            .captcha-display {
+                font-size: 1.8rem;
+                padding: 1rem;
+                width: 100%;
+            }
+            #captchaInput {
+                font-size: 1.2rem;
+                padding: 1rem;
+            }
         }
 
         .refresh-btn {
@@ -242,6 +259,14 @@
             border-radius: 1rem;
             margin: 1.5rem 0;
             border: 2px solid #e2e8f0;
+            position: relative;
+        }
+
+        .map-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .loader {
@@ -348,7 +373,10 @@
                 </button>
             </div>
             <div class="loader" id="parkingLoader"></div>
-            <iframe id="parkingMap" class="hidden"></iframe>
+            <div id="mapContainer" class="hidden">
+                <div class="loader map-loader" id="mapLoader"></div>
+                <iframe id="parkingMap" onload="document.getElementById('mapLoader').style.display = 'none'" style="display: none"></iframe>
+            </div>
             <button class="action-btn btn-back mt-2" onclick="showVehicleSection()">
                 <i class="fas fa-arrow-left"></i>
                 Back to Vehicle Details
@@ -437,11 +465,12 @@
         function updateParkingButton() {
             const parkingBtn = document.getElementById('parkingAction');
             const locationData = JSON.parse(localStorage.getItem("parkingLocation"));
+            const expiryTime = 43200000; // 12 hours in milliseconds
             
-            if (locationData && Date.now() < locationData.expiry) {
+            if (locationData && Date.now() < (locationData.timestamp + expiryTime)) {
                 parkingBtn.innerHTML = '<i class="fas fa-directions"></i> Get Directions';
                 parkingBtn.onclick = () => {
-                    window.open(`https://www.openstreetmap.org/directions?engine=osrm_car&route=${locationData.lat},${locationData.lng}`, '_blank');
+                    window.open(`https://www.google.com/maps/dir/?api=1&destination=${locationData.lat},${locationData.lng}&travelmode=driving`, '_blank');
                 };
             } else {
                 parkingBtn.innerHTML = '<i class="fas fa-car"></i> Mark Parking Spot';
@@ -462,11 +491,11 @@
                     const locationData = {
                         lat: lat,
                         lng: lng,
-                        expiry: Date.now() + 86400000
+                        timestamp: Date.now()
                     };
                     
                     localStorage.setItem("parkingLocation", JSON.stringify(locationData));
-                    showAlert('Parking location saved successfully!', 'success');
+                    showAlert('Parking location saved for 12 hours!', 'success');
                     updateParkingButton();
                 }, error => {
                     loader.style.display = "none";
@@ -479,14 +508,21 @@
 
         function findMyCar() {
             const locationData = JSON.parse(localStorage.getItem("parkingLocation"));
+            const mapContainer = document.getElementById("mapContainer");
             const mapFrame = document.getElementById("parkingMap");
+            const mapLoader = document.getElementById("mapLoader");
+            const expiryTime = 43200000; // 12 hours
 
-            if (!locationData || Date.now() > locationData.expiry) {
-                showAlert("No valid parking location found", 'error');
+            if (!locationData || Date.now() > (locationData.timestamp + expiryTime)) {
+                showAlert("Parking location expired. Please mark again.", 'error');
+                localStorage.removeItem("parkingLocation");
+                updateParkingButton();
                 return;
             }
 
-            mapFrame.classList.remove("hidden");
+            mapContainer.classList.remove("hidden");
+            mapLoader.style.display = "block";
+            mapFrame.style.display = "block";
             mapFrame.src = `https://www.openstreetmap.org/export/embed.html?bbox=${
                 locationData.lng-0.01},${locationData.lat-0.01},${
                 locationData.lng+0.01},${locationData.lat+0.01
