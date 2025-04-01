@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find My Car - QRGuard</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        button { padding: 10px 15px; font-size: 16px; cursor: pointer; margin: 10px; }
+        #mapFrame { width: 100%; height: 300px; margin-top: 20px; display: none; }
+    </style>
+</head>
+<body>
+
+    <h1>Find My Car - QRGuard</h1>
+    <button onclick="saveParkingLocation()">🚗 Mark Parking Location</button>
+    <button onclick="findMyCar()">📍 Find My Car</button>
+
+    <iframe id="mapFrame" frameborder="0" style="border:0;" allowfullscreen></iframe>
+
+    <script>
+        // Function to save parking location as a link in localStorage
+        function saveParkingLocation() {
+            if (navigator.geolocation) {
+                // Request for high accuracy location
+                navigator.geolocation.getCurrentPosition(position => {
+                    let lat = position.coords.latitude;
+                    let lng = position.coords.longitude;
+                    let locationLink = `https://www.google.com/maps?q=${lat},${lng}&z=17&t=h`;
+                    console.log(`Parking Location Link: ${locationLink}`);
+
+                    // Store the link in localStorage with an expiry of 24 hours
+                    let expiryDate = new Date();
+                    expiryDate.setHours(expiryDate.getHours() + 24); // Set expiry to 24 hours from now
+                    let locationData = { link: locationLink, expiry: expiryDate.getTime() };
+                    localStorage.setItem("carLocation", JSON.stringify(locationData));
+
+                    alert("Parking location saved! It will be valid for 24 hours.");
+                }, error => {
+                    console.error("Error getting location:", error);
+                    alert("Error getting location. Please check your location permissions and try again.");
+                }, { 
+                    enableHighAccuracy: true,  // Request for more accurate location
+                    timeout: 10000,            // Timeout after 10 seconds
+                    maximumAge: 0             // Force a fresh location (no cached data)
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        // Function to find car based on saved location link in localStorage
+        function findMyCar() {
+            let locationData = JSON.parse(localStorage.getItem("carLocation"));
+
+            if (locationData && locationData.expiry > Date.now()) {
+                window.location.href = locationData.link; // Redirect to the saved location link
+            } else {
+                alert("No parking location found or the saved location has expired. Please mark your parking location first.");
+            }
+        }
+    </script>
+
+</body>
+</html>
