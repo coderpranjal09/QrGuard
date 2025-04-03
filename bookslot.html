@@ -1,0 +1,815 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Finder</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f6fa;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            margin-left: 10px;
+        }
+        
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            border-bottom-color: var(--secondary-color);
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .cta-button {
+            background: var(--secondary-color);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        
+        .fullscreen-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+        }
+        
+        .fullscreen-loader .loader {
+            width: 60px;
+            height: 60px;
+            border-width: 6px;
+        }
+        
+        .parking-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .parking-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .parking-card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .parking-card h3 i {
+            color: var(--secondary-color);
+        }
+        
+        .parking-address {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #555;
+            margin: 10px 0;
+        }
+        
+        .availability {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        
+        .available {
+            color: var(--success-color);
+        }
+        
+        .total {
+            color: #777;
+            font-size: 0.9em;
+        }
+        
+        .distance {
+            background: #f0f0f0;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        
+        .pricing {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .normal-rate {
+            text-decoration: line-through;
+            color: #777;
+            font-size: 0.9em;
+        }
+        
+        .discounted-rate {
+            color: var(--success-color);
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .rate-label {
+            font-size: 0.9em;
+            color: #555;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .button-group button, 
+        .button-group a {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            min-width: 120px;
+            justify-content: center;
+        }
+        
+        .book-button {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .show-map-button {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .directions-button {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        #map {
+            height: 400px;
+            margin: 30px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .history-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .history-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .history-card h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .history-details {
+            margin: 10px 0;
+            color: #555;
+        }
+        
+        .booking-time {
+            font-size: 0.9em;
+            color: #777;
+        }
+        
+        .no-history {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .button-group button, 
+            .button-group a {
+                width: 100%;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .cta-button {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1 class="logo">Parking Finder <i class="fas fa-parking"></i></h1>
+    </header>
+
+    <div class="tab-container">
+        <div class="tab active" onclick="switchTab('find')">Find Parking</div>
+        <div class="tab" onclick="switchTab('history')">Booking History</div>
+    </div>
+
+    <div id="findTab" class="tab-content active">
+        <div style="text-align: center;">
+            <button class="cta-button" onclick="getLocation()">
+                <i class="fas fa-map-marker-alt"></i> Find Parking Near Me
+            </button>
+        </div>
+
+        <div class="loader" id="loader"></div>
+        
+        <div id="map"></div>
+        
+        <div id="results" class="parking-container"></div>
+    </div>
+
+    <div id="historyTab" class="tab-content">
+        <div id="historyContainer" class="parking-container"></div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="bookingDetails"></div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Loader -->
+    <div class="fullscreen-loader" id="fullscreenLoader">
+        <div class="loader"></div>
+    </div>
+    <script src="parking.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Sample parking data with rates
+        function checkAuth() {
+            const authToken = getCookie('vehicleAuthToken');
+            if (!authToken) {
+                // Redirect to login page if no token found
+                window.location.href = 'userlogin.html';
+                return false;
+            }
+            return true;
+        }
+    
+        // Initialize the page with auth check
+        document.addEventListener('DOMContentLoaded', function() {
+            if (checkAuth()) {
+                loadBookingHistory();
+            }
+        });
+    
+        // Existing cookie function (keep this)
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        let map;
+        let userMarker;
+        let userLat, userLng;
+        const markers = [];
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBookingHistory();
+        });
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return JSON.parse(parts.pop().split(';').shift());
+            return null;
+        }
+
+        function setCookie(name, value, hours) {
+            const date = new Date();
+            date.setTime(date.getTime() + (hours * 60 * 60 * 1000));
+            document.cookie = `${name}=${JSON.stringify(value)}; expires=${date.toUTCString()}; path=/`;
+        }
+
+        function loadBookingHistory() {
+            const history = getCookie('parkingHistory') || [];
+            const now = new Date();
+            const twelveHoursAgo = new Date(now.getTime() - (12 * 60 * 60 * 1000));
+            
+            // Filter bookings from last 12 hours
+            const recentBookings = history.filter(booking => {
+                const bookingTime = new Date(booking.timestamp);
+                return bookingTime > twelveHoursAgo;
+            });
+            
+            displayBookingHistory(recentBookings);
+        }
+
+        function displayBookingHistory(bookings) {
+            const historyContainer = document.getElementById('historyContainer');
+            
+            if (bookings.length === 0) {
+                historyContainer.innerHTML = `
+                    <div class="no-history">
+                        <i class="fas fa-calendar-times" style="font-size: 3rem; color: var(--warning-color); margin-bottom: 15px;"></i>
+                        <h3>No Recent Bookings</h3>
+                        <p>You haven't made any bookings in the last 12 hours.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            historyContainer.innerHTML = bookings.map(booking => `
+                <div class="history-card" onclick="showBookingDetails('${booking.bookingId}')">
+                    <h4><i class="fas fa-parking"></i> ${booking.parkingName}</h4>
+                    <div class="history-details">
+                        <p><i class="fas fa-map-marker-alt"></i> ${booking.address}</p>
+                        <p><i class="fas fa-receipt"></i> Booking ID: ${booking.bookingId}</p>
+                        <p><i class="fas fa-clock"></i> <span class="booking-time">${new Date(booking.timestamp).toLocaleString()}</span></p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showBookingDetails(bookingId) {
+            const history = getCookie('parkingHistory') || [];
+            const booking = history.find(b => b.bookingId === bookingId);
+            
+            if (!booking) return;
+            
+            const parking = parkingPartners.find(p => p.id === booking.parkingId) || {
+                name: booking.parkingName,
+                address: booking.address,
+                operator: "Unknown Operator",
+                normalRate: 0,
+                qrGuardDiscount: 0,
+                rateUnit: "per hour"
+            };
+            
+            document.getElementById('bookingDetails').innerHTML = `
+                <h3>Booking Details</h3>
+                <div style="text-align: center;">
+                    <div style="color: #3498db; font-size: 3rem; margin-bottom: 15px;">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <h4>${parking.name}</h4>
+                    <p>${parking.address}</p>
+                    
+                    <div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+                        <p><strong>Booking ID:</strong> ${booking.bookingId}</p>
+                        <p><strong>Booking Time:</strong> ${new Date(booking.timestamp).toLocaleString()}</p>
+                        <div style="margin-top: 10px;">
+                            <p class="rate-label">Parking Rates:</p>
+                            <p><span class="normal-rate">₹${parking.normalRate} ${parking.rateUnit}</span>
+                            <span style="margin: 0 5px;">→</span>
+                            <span class="discounted-rate">₹${parking.qrGuardDiscount} ${parking.rateUnit}</span></p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: 5px;">
+                        <h5><i class="fas fa-info-circle"></i> Instructions</h5>
+                        <p>Show this receipt to ${parking.operator} when entering</p>
+                        <p><i class="fas fa-qrcode"></i> Scan QR code at entry gate</p>
+                    </div>
+                    
+                    <button style="background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 20px;"
+                            onclick="closeModal()">
+                        <i class="fas fa-times"></i> Close
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('bookingModal').style.display = 'flex';
+        }
+
+        async function getLocation() {
+            try {
+                showLoader();
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                });
+                showPosition(position);
+            } catch (error) {
+                showError(error);
+            } finally {
+                hideLoader();
+            }
+        }
+
+        function showPosition(position) {
+            userLat = position.coords.latitude;
+            userLng = position.coords.longitude;
+            
+            const nearbyParkings = parkingPartners.filter(parking => {
+                const distance = calculateDistance(
+                    userLat,
+                    userLng,
+                    parking.coordinates[0],
+                    parking.coordinates[1]
+                );
+                parking.distance = distance;
+                return distance <= 5; // 5km radius
+            });
+
+            if(nearbyParkings.length === 0) {
+                showNoParkingMessage();
+                return;
+            }
+
+            // Sort by distance
+            nearbyParkings.sort((a, b) => a.distance - b.distance);
+            
+            displayResults(nearbyParkings);
+            initMap(userLat, userLng, nearbyParkings);
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Earth radius in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * 
+                Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            return R * c;
+        }
+
+        function initMap(lat, lng, parkings) {
+            if (map) map.remove();
+            
+            document.getElementById('map').style.display = 'block';
+            map = L.map('map').setView([lat, lng], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Add user marker with custom icon
+            userMarker = L.marker([lat, lng], {
+                icon: L.divIcon({
+                    className: 'user-marker',
+                    html: '<div style="background-color: #3498db; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white;"><i class="fas fa-user" style="font-size: 12px;"></i></div>',
+                    iconSize: [20, 20]
+                })
+            }).addTo(map).bindPopup('Your Location');
+
+            // Clear previous markers
+            markers.length = 0;
+            
+            // Add parking markers
+            parkings.forEach(parking => {
+                const marker = L.marker(parking.coordinates, {
+                    icon: L.icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41]
+                    })
+                }).addTo(map);
+                
+                marker.bindPopup(`
+                    <div style="min-width: 200px;">
+                        <h4 style="margin: 5px 0; color: #2c3e50;">${parking.name}</h4>
+                        <p style="margin: 5px 0; color: #555;">${parking.address}</p>
+                        <p style="margin: 5px 0;">Available: ${parking.available}/${parking.slots}</p>
+                        <div style="margin: 5px 0;">
+                            <span style="text-decoration: line-through; color: #777;">₹${parking.normalRate}</span>
+                            <span style="margin: 0 5px;">→</span>
+                            <span style="color: #27ae60; font-weight: bold;">₹${parking.qrGuardDiscount}</span>
+                            <span style="font-size: 0.8em; color: #777;">${parking.rateUnit}</span>
+                        </div>
+                        <button style="background: #3498db; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; width: 100%;" 
+                                onclick="confirmBooking(${parking.id})">
+                            <i class="fas fa-bookmark"></i> Book Now
+                        </button>
+                    </div>
+                `);
+                
+                markers.push({ id: parking.id, marker: marker });
+            });
+        }
+
+        function displayResults(parkings) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = parkings.map(parking => `
+                <div class="parking-card">
+                    <h3><i class="fas fa-parking"></i> ${parking.name}</h3>
+                    <div class="parking-address">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>${parking.address}</span>
+                    </div>
+                    <div class="availability">
+                        <span class="available">${parking.available} slots available</span>
+                        <span class="total">/ ${parking.slots} total</span>
+                        <span class="distance">${parking.distance.toFixed(1)} km</span>
+                    </div>
+                    <div class="pricing">
+                        <p class="rate-label">Parking Rates (${parking.rateUnit}):</p>
+                        <p>
+                            <span class="normal-rate">₹${parking.normalRate}</span>
+                            <span style="margin: 0 5px;">→</span>
+                            <span class="discounted-rate">₹${parking.qrGuardDiscount}</span>
+                        </p>
+                    </div>
+                    <div class="button-group">
+                        <button class="book-button" onclick="confirmBooking(${parking.id})">
+                            <i class="fas fa-bookmark"></i> Book Now
+                        </button>
+                        <button class="show-map-button" onclick="centerMap(${parking.id})">
+                            <i class="fas fa-map-marked-alt"></i> Show on Map
+                        </button>
+                        <a href="https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${parking.coordinates[0]},${parking.coordinates[1]}&travelmode=driving" 
+                           target="_blank" class="directions-button">
+                            <i class="fas fa-directions"></i> Directions
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function centerMap(parkingId) {
+            const markerObj = markers.find(m => m.id === parkingId);
+            if (markerObj) {
+                map.setView(markerObj.marker.getLatLng(), 15);
+                markerObj.marker.openPopup();
+            }
+        }
+
+        function confirmBooking(parkingId) {
+            const parking = parkingPartners.find(p => p.id === parkingId);
+            
+            // Show loading spinner
+            document.getElementById('fullscreenLoader').style.display = 'flex';
+            
+            // Simulate processing delay (3 seconds)
+            setTimeout(() => {
+                // Hide loader
+                document.getElementById('fullscreenLoader').style.display = 'none';
+                
+                // Generate random booking ID
+                const bookingId = 'BK-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+                const timestamp = new Date().toISOString();
+                
+                // Save to booking history
+                const history = getCookie('parkingHistory') || [];
+                history.unshift({
+                    parkingId: parking.id,
+                    parkingName: parking.name,
+                    address: parking.address,
+                    bookingId: bookingId,
+                    timestamp: timestamp,
+                    normalRate: parking.normalRate,
+                    discountedRate: parking.qrGuardDiscount,
+                    rateUnit: parking.rateUnit
+                });
+                setCookie('parkingHistory', history, 12); // Store for 12 hours
+                
+                // Show confirmation
+                showBookingConfirmation(parking, bookingId, timestamp);
+            }, 3000);
+        }
+
+        function showBookingConfirmation(parking, bookingId, timestamp) {
+            document.getElementById('bookingDetails').innerHTML = `
+                <div style="text-align: center;">
+                    <div style="color: #27ae60; font-size: 3rem; margin-bottom: 15px;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h4>Booking Successful!</h4>
+                    <p><strong>${parking.name}</strong></p>
+                    <p>${parking.address}</p>
+                    
+                    <div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+                        <p><strong>Booking ID:</strong> ${bookingId}</p>
+                        <p><strong>Booking Time:</strong> ${new Date(timestamp).toLocaleString()}</p>
+                        <div style="margin-top: 10px;">
+                            <p class="rate-label">Parking Rates:</p>
+                            <p><span class="normal-rate">₹${parking.normalRate} ${parking.rateUnit}</span>
+                            <span style="margin: 0 5px;">→</span>
+                            <span class="discounted-rate">₹${parking.qrGuardDiscount} ${parking.rateUnit}</span></p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #e8f4fd; border-radius: 5px;">
+                        <h5><i class="fas fa-info-circle"></i> Instructions</h5>
+                        <p>Show this receipt to ${parking.operator} when entering</p>
+                        <p><i class="fas fa-qrcode"></i> Scan QR code at entry gate</p>
+                    </div>
+                    
+                    <button style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 20px;"
+                            onclick="closeModal(); loadBookingHistory(); switchTab('history')">
+                        <i class="fas fa-history"></i> View Booking History
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('bookingModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('bookingModal').style.display = 'none';
+        }
+
+        function showNoParkingMessage() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <div class="no-history">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning-color); margin-bottom: 15px;"></i>
+                    <h3>No Parking Found Nearby</h3>
+                    <p>We couldn't find any parking spots within 5km of your location.</p>
+                    <button class="cta-button" onclick="getLocation()">
+                        <i class="fas fa-sync-alt"></i> Try Again
+                    </button>
+                </div>
+            `;
+        }
+
+        function showError(error) {
+            const errorMessages = {
+                1: 'Permission denied - Please enable location access in your browser settings',
+                2: 'Position unavailable - Could not determine your location',
+                3: 'Timeout - Location request took too long'
+            };
+            
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <div class="no-history">
+                    <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: var(--danger-color); margin-bottom: 15px;"></i>
+                    <h3>Error Getting Location</h3>
+                    <p>${errorMessages[error.code] || 'An unknown error occurred'}</p>
+                    <button class="cta-button" onclick="getLocation()">
+                        <i class="fas fa-sync-alt"></i> Try Again
+                    </button>
+                </div>
+            `;
+        }
+
+        function showLoader() {
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('map').style.display = 'none';
+        }
+
+        function hideLoader() {
+            document.getElementById('loader').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('bookingModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
