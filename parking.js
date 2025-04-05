@@ -51,7 +51,7 @@ const parkingPartners = [
   
   {
     id: 5,
-    name: "THDC IHET F block Parkinhg",
+    name: "THDC IHET F block Parking",
     coordinates: [30.38336, 78.46450],
     slots: 50,
     available: 30,
