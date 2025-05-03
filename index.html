@@ -1,396 +1,548 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>QR Guard - Car QR Code Safety Service</title>
-    <link rel="icon" type="image/png" href="logo.png" />
-    <link rel="stylesheet" href="styles.css" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-      <div class="navbar-logo">
-        <img src="logo.png" alt="QR Guard Logo" />
-        <span>QR Guard Technologies</span>
-      </div>
-      <div class="navbar-toggle" onclick="toggleMenu()">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-      </div>
-      <ul class="navbar-links">
-        <li><a href="#" class="active">Home</a></li>
-        <li><a href="services.html">Services</a></li>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Alert System</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <script src="z01.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --text: #f8fafc;
+            --success: #22c55e;
+            --error: #ef4444;
+            --warning: #eab308;
+        }
+        #callNowButton {
+            transition: opacity 0.3s ease;
+        }
+        
+        #callNowButton.hidden {
+            display: none;
+        }
 
-        <li><a href="sentalert.html">Send Alert</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-btn"
-            >Login <i class="fas fa-chevron-down"></i
-          ></a>
-          <ul class="dropdown-content">
-            <li><a href="userlogin.html">User Login</a></li>
-            
-          </ul>
-        </li>
-        <li><a href="aboutus.html">About Us</a></li>
-        <li><a href="community.html">Community</a></li>
-        <li><a href="contactus.html">Contact Us</a></li>
-      </ul>
-    </nav>
-    <!-- Add this right below the navbar -->
-    <section class="logo-marquee">
-      <div class="logo-container">
-        <img
-          src="tides iit r.png"
-          alt="tides"
-          class="partner-logo"
-        />
-        <img
-        <img
-          src="Crystas-removebg-preview.png"
-          alt="crystas innovations"
-          class="partner-logo"
-        />
-        <img
-          src="msmelogo-removebg-preview.png"
-          alt="MSME Logo"
-          class="partner-logo"
-        />
-        <img
-          src="png-transparent-razorpay-hd-logo-removebg-preview.png"
-          alt="Razorpay Logo"
-          class="partner-logo"
-        />
-        <img src="logo.png" alt="QR Guard Logo" class="partner-logo" />
-        <img
-          src="AP__1_-removebg-preview.png"
-          alt="AP Tech Logo"
-          class="partner-logo"
-        />
-        <img
-          src="digitalindialogo-removebg-preview.png"
-          alt="Digital India Logo"
-          class="partner-logo"
-        />
-        <img
-          src="payu_logo-removebg-preview.png"
-          alt="pay u logo"
-          class="partner-logo"
-        />
-        <img
-          src="tides-removebg-preview.png"
-          alt="tides"
-          class="partner-logo"
-        />
-      </div>
-    </section>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
 
-    <section>
-      <!-- Animated Banner Section -->
-      <section class="animated-banner">
-        <div class="banner-content">
-          <div class="banner-text">
-            <h1>Protect Your Vehicle 24/7</h1>
-            <p>Join 46+ protected vehicles</p>
-            <div class="stats">
-              <div class="stat-item">
-                <h3>140+</h3>
-                <p>Alerts Handled</p>
-              </div>
-              <div class="stat-item">
-                <h3>98%</h3>
-                <p>User Satisfaction</p>
-              </div>
+        body {
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background: var(--surface);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 640px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            margin: 1rem;
+            transition: transform 0.3s ease;
+            display: none;
+        }
+
+        .active-step {
+            display: block;
+        }
+
+        h1, h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+        }
+        select{
+            color: #ffffff;
+            background-color: #1e293b;
+        }
+        option{
+            color: black;
+            background-color: rgb(162, 168, 236);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            margin: 10px 0;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        video {
+            width: 100%;
+            border-radius: 1rem;
+            margin: 1.5rem 0;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 1.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .alert-box {
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin: 1rem 0;
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid var(--error);
+            color: var(--error);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .success-card {
+            background: rgba(34, 197, 94, 0.1);
+            border: 2px solid var(--success);
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        .video-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .detection-outline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 3px solid var(--success);
+            border-radius: 1rem;
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+            pointer-events: none;
+            display: none;
+        }
+
+        .detection-info {
+            background: var(--surface);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            border: 2px solid var(--success);
+            color: var(--success);
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            display: none;
+        }
+
+        /* Base styles (already defined in your code) */
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 1rem; /* Reduce padding for smaller screens */
+    }
+
+    .container {
+        padding: 1.5rem; /* Reduce container padding */
+        margin: 0.5rem; /* Reduce container margin */
+    }
+
+    h1 {
+        font-size: 1.75rem; /* Reduce heading size */
+    }
+
+    h2 {
+        font-size: 1.5rem; /* Reduce subheading size */
+    }
+
+    input, select, textarea {
+        padding: 0.75rem; /* Reduce input padding */
+        font-size: 0.9rem; /* Reduce font size for inputs */
+    }
+
+    .btn {
+        padding: 0.75rem 1rem; /* Reduce button padding */
+        font-size: 0.9rem; /* Reduce button font size */
+    }
+
+    video {
+        margin: 1rem 0; /* Reduce video margin */
+    }
+
+    .detection-info {
+        font-size: 1rem; /* Reduce detection info font size */
+        padding: 0.75rem; /* Reduce detection info padding */
+    }
+
+    .success-card {
+        padding: 1.5rem; /* Reduce success card padding */
+    }
+
+    .btn-group {
+        flex-direction: column; /* Stack buttons vertically on small screens */
+        gap: 0.5rem; /* Reduce gap between buttons */
+    }
+
+    .btn-group .btn {
+        width: 100%; /* Full width buttons */
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 0.5rem; /* Further reduce padding for very small screens */
+    }
+
+    .container {
+        padding: 1rem; /* Further reduce container padding */
+        border-radius: 1rem; /* Reduce border radius */
+    }
+
+    h1 {
+        font-size: rem; /* Further reduce heading size */
+    }
+
+    h2 {
+        font-size: 1.25rem; /* Further reduce subheading size */
+    }
+
+    input, select, textarea {
+        padding: 1rem; /* Further reduce input padding */
+        font-size: 1rem; /* Further reduce font size for inputs */
+    }
+
+    .btn {
+        padding: 1rem 0.75rem; /* Further reduce button padding */
+        font-size: 1rem; /* Further reduce button font size */
+    }
+
+    video {
+        margin: 0.75rem 0; /* Further reduce video margin */
+    }
+
+    .detection-info {
+        font-size: 0.9rem; /* Further reduce detection info font size */
+        padding: 0.5rem; /* Further reduce detection info padding */
+    }
+
+    .success-card {
+        padding: 1rem; /* Further reduce success card padding */
+    }
+
+    .btn-group {
+        gap: 0.25rem; /* Further reduce gap between buttons */
+    }
+}
+    </style>
+</head>
+<body>
+    <div id="fullScreenLoading" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>Loading... Please wait</p>
+    </div>
+
+    <div id="consentModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Camera Access Required</h3>
+            <p>We need camera access to verify the vehicle. Your data is processed in real-time and not stored.</p>
+            <div class="btn-group">
+                <button class="btn" onclick="proceedWithVerification()">Accept & Continue</button>
+                <button class="btn" onclick="cancelVerification()">Cancel</button>
             </div>
-          </div>
-          <div class="banner-graphic">
-            <div class="qr-animation">
-              <div class="qr-code"></div>
-              <div class="scan-beam"></div>
-            </div>
-          </div>
         </div>
-      </section>
+    </div>
 
-      <!-- Statistics Chart Section -->
-      <section class="stats-section">
-        <h2>Monthly Alert Statistics</h2>
-        <div class="chart-container">
-          <canvas id="alertChart"></canvas>
+    <!-- Step 1: Vehicle ID Input -->
+    <div id="vehicleForm" class="container active-step">
+        <h1>Enter Vehicle ID</h1>
+        <input type="text" id="vehicleID" placeholder="Vehicle ID" required autocomplete="off">
+        <button class="btn" onclick="nextStep()">Next</button>
+        <div id="errorMsg" class="alert-box">🚨 Vehicle Not Found! Please check Vehicle ID.</div>
+    </div>
+
+    <!-- Step 2: Issue Selection -->
+    <div id="issueForm" class="container">
+        <h2>Vehicle Information</h2>
+        <p id="vehicleDetails"></p>
+
+        <h2>Select Issue</h2>
+        <select id="issueSelect">
+            <option value="">Select an issue</option>
+            <option value="Lights on">The light of the vehicle is on</option>
+            <option value="No parking">Vehicle is parked in a no-parking zone</option>
+            <option value="Towing">Vehicle is being towed</option>
+            <option value="Blocked path">Vehicle is blocking the path</option>
+            <option value="Suspicious activity">Suspicious activity near the vehicle</option>
+            <option value="Child/Pet inside">Child or pet left inside the vehicle</option>
+            <option value="Accident">Vehicle met with an accident</option>
+            <option value="Flat tire">Vehicle has a flat tire</option>
+            <option value="Breakdown">Vehicle is broken down</option>
+            <option value="Unauthorized access">Unauthorized access attempt</option>
+        </select>
+
+        <h2>Additional Information</h2>
+        <textarea id="additionalInfo" rows="4" placeholder="Enter extra details..." autocomplete="off"></textarea>
+
+        <button class="btn" onclick="showConsentModal()">Start Verification</button>
+    </div>
+
+    <!-- Step 3: Camera Verification -->
+    <div id="videoVerification" class="container">
+        <h2>Verifying Vehicle...</h2>
+        <p>Please focus camera on vehicle</p>
+        <div class="video-container">
+            <video id="video" autoplay playsinline></video>
+            <div id="detectionOutline" class="detection-outline"></div>
         </div>
-      </section>
+        <div id="detectionInfo" class="detection-info"></div>
+    </div>
 
-      <!-- Rest of the existing content remains same -->
-
-      <script>
-        // Chart initialization
-        document.addEventListener("DOMContentLoaded", function () {
-          const ctx = document.getElementById("alertChart").getContext("2d");
-          new Chart(ctx, {
-            type: "bar",
-            data: {
-              labels: [
-                "Parking Violations",
-                "Suspicious Activity",
-                "Emergency Alerts",
-                "Vehicle Issues",
-                "Other",
-              ],
-              datasets: [
-                {
-                  label: "Alerts Received",
-                  data: [65, 59, 80, 81, 56],
-                  backgroundColor: [
-                    "rgba(0, 102, 204, 0.7)",
-                    "rgba(255, 221, 87, 0.7)",
-                    "rgba(255, 99, 132, 0.7)",
-                    "rgba(75, 192, 192, 0.7)",
-                    "rgba(153, 102, 255, 0.7)",
-                  ],
-                  borderWidth: 1,
-                },
-              ],
-            },
-            options: {
-              responsive: true,
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  title: {
-                    display: true,
-                    text: "Number of Alerts",
-                  },
-                },
-              },
-            },
-          });
-        });
-      </script>
-      <div id="loading-screen">
-        <div class="spinner"></div>
-      </div>
-    </section>
-    <!-- Hero Section -->
-    <header class="hero">
-      <h1>Qr Guard</h1>
-      <p>
-        Your vehicle safety, our priority. Instant alerts with QR code scanning
-        for real-time updates on your car’s status.
-      </p>
-      <button class="cta-btn" onclick="window.location.href='order.html'">
-        Order Your QR Code
-      </button>
-    </header>
-
-    <!-- About Section -->
-    <section class="about" id="services">
-      <h2>Our Services</h2>
-      <p>
-        Qr Guard provides QR code services for vehicles that allow car owners to
-        receive instant alerts about any incidents. By scanning a unique QR code
-        attached to the car, nearby individuals can quickly notify the owner of
-        any issues.
-      </p>
-      <p>
-        From parking violations to suspicious activities, our service ensures
-        that you stay informed and can respond promptly to any situation
-        involving your vehicle.
-      </p>
-    </section>
-
-    <!-- How It Works Section -->
-    <section class="how-it-works" id="how-it-works">
-      <h2>How It Works</h2>
-      <div class="steps">
-        <div class="step">
-          <h3>Step 1: Register Your Vehicle</h3>
-          <p>
-            Create an account with us and register your vehicle. A unique QR
-            code will be generated specifically for your car.
-          </p>
+    <!-- Step 4: Success Message -->
+    <div id="successMessage" class="container success-card">
+        <h2>Verification Successful</h2>
+        <p>The vehicle has been successfully verified.</p>
+        <div class="btn-group">
+            <button class="btn" onclick="sendAlert()">📩 Send Alert</button>
+            <button class="btn" id="callNowButton" onclick="callOwner()">📞 Send Call Alert</button>
+           
         </div>
-        <div class="step">
-          <h3>Step 2: Place the QR Code on Your Vehicle</h3>
-          <p>
-            Receive your QR code decal, which is durable and easily scannable.
-            Place it on your car where it’s visible to passersby.
-          </p>
-        </div>
-        <div class="step">
-          <h3>Step 3: Receive Instant Alerts</h3>
-          <p>
-            When someone scans the QR code, they will be able to send you alerts
-            for various issues related to your vehicle.
-          </p>
-        </div>
-      </div>
-    </section>
+    </div>
 
-    <!-- Alert Options Section -->
-    <section class="alert-options" id="alerts">
-      <h2>Alert Options</h2>
-      <p>
-        Our service provides the following types of alerts to keep you informed
-        of any situation involving your vehicle:
-      </p>
-      <ul>
-        <li>
-          <strong>Vehicle in Trouble</strong>: Notifies the owner if there’s a
-          major mechanical issue or breakdown.
-        </li>
-        <li>
-          <strong>Parked in No Parking Zone</strong>: Alerts you if your vehicle
-          is parked illegally.
-        </li>
-        <li>
-          <strong>Child or Pet Left Inside</strong>: Critical alert if a child
-          or pet is locked inside the vehicle.
-        </li>
-        <li>
-          <strong>Suspicious Activity Near Vehicle</strong>: Warning of
-          potential vandalism or suspicious behavior near your car.
-        </li>
-        <li>
-          <strong>Car Blocking Exit</strong>: Notification if your vehicle is
-          obstructing a path or route.
-        </li>
-        <li>
-          <strong>Vehicle Fire</strong>: Emergency alert in case of fire within
-          or near the vehicle.
-        </li>
-        <li>
-          <strong>Fuel/Fluid Leak</strong>: Alerts you if there are signs of
-          fuel or other fluid leaks under the vehicle.
-        </li>
-      </ul>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-      <h2>Contact Us</h2>
-      <p>
-        If you have any questions or need further assistance, please reach out
-        to us through the details below.
-      </p>
-      <a>Email: qrguardprivatelimited@gmail.com | Phone: +91-9258902271</a>
-    </section>
-
-    <!-- Footer Section -->
-    <footer>
-      <p>
-        © 2024 QR Guard Technologies. All rights reserved.
-        <a href="privacypolicy.html">Privacy Policy</a> |
-        <a href="refundpolicy.html">Refund Policy</a> |
-        <a href="CareersPortal.html">Apply for Sales Ambassador</a> |
-        <a href="joinTeam.html">Latest jobs</a>
-      </p>
-    </footer>
-
-    <!-- JavaScript for the Hamburger Menu -->
     <script>
-      function toggleMenu() {
-        const navLinks = document.querySelector(".navbar-links");
-        const toggleButton = document.querySelector(".navbar-toggle");
+        
+        let videoElement = document.getElementById('video');
+        let vehicleID, vehicleInfo, model;
+        let stream;
+        let detectionOutline = document.getElementById('detectionOutline');
+        let detectionInfo = document.getElementById('detectionInfo');
 
-        navLinks.classList.toggle("active"); // Toggle the active class for links
-        toggleButton.classList.toggle("active"); // Toggle the active class for the toggle button
-      }
-      function closeMenu() {
-        const navLinks = document.querySelector(".nav-links");
-        const closeMenu = document.querySelector(".close-menu");
-        const hamburger = document.querySelector(".hamburger-menu");
-
-        navLinks.classList.remove("active");
-        closeMenu.style.display = "none";
-        hamburger.classList.remove("active");
-      }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        document.body.oncopy = function () {
-          return false;
-        };
-        document.body.oncut = function () {
-          return false;
-        };
-        document.body.oncontextmenu = function () {
-          return false;
-        }; // Disables right-click
-        document.body.onselectstart = function () {
-          return false;
-        };
-      });
-
-      function addFavicon(faviconURL) {
-        var link = document.createElement("link");
-        link.type = "image/png";
-        link.rel = "icon";
-        link.href = faviconURL;
-        document.head.appendChild(link);
-      }
-
-      // Add your favicon here
-      addFavicon("logo.png");
-      document.addEventListener("DOMContentLoaded", function () {
-        window.onload = function () {
-          document.getElementById("loading-screen").style.display = "none";
-        };
-      });
-      document.addEventListener("DOMContentLoaded", function () {
-        // Block right-click
-        document.addEventListener("contextmenu", function (e) {
-          e.preventDefault();
-          alert("Right-click is disabled on this website.");
+        // Initialize first step
+        document.addEventListener("DOMContentLoaded", () => {
+            showStep('vehicleForm');
         });
 
-        // Block text selection
-        document.addEventListener("selectstart", function (e) {
-          e.preventDefault();
-        });
+        function showStep(stepId) {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.remove('active-step');
+            });
+            const step = document.getElementById(stepId);
+            if (step) step.classList.add('active-step');
+        }
 
-        // Block copy (Ctrl+C or right-click copy)
-        document.addEventListener("copy", function (e) {
-          e.preventDefault();
-          alert("Copying is disabled on this website.");
-        });
+        function nextStep() {
+            vehicleID = document.getElementById('vehicleID').value.trim().toUpperCase();
+            vehicleInfo = vehicleData.find(v => v.vehicleID.toUpperCase() === vehicleID);
 
-        // Block cut (Ctrl+X or right-click cut)
-        document.addEventListener("cut", function (e) {
-          e.preventDefault();
-          alert("Cutting is disabled on this website.");
-        });
+            if (vehicleInfo) {
+                document.getElementById("errorMsg").style.display = "none";
+                document.getElementById("vehicleDetails").innerHTML = 
+                    `<strong>Model:</strong> ${vehicleInfo.model} <br>
+                    <strong>Vehicle No:</strong> ${vehicleInfo.vehicleNo} <br>
+                    <strong>Owner:</strong> ${vehicleInfo.ownerName} <br>
+                    <strong>Driver:</strong> ${vehicleInfo.driverName}`;
+                showStep('issueForm');
+            } else {
+                document.getElementById("errorMsg").style.display = "block";
+            }
+        }
 
-        // Block keyboard shortcuts for copy, cut, and paste
-        document.addEventListener("keydown", function (e) {
-          // Block Ctrl+C (Copy)
-          if (e.ctrlKey && e.key === "c") {
-            e.preventDefault();
-            alert("Copying is disabled on this website.");
-          }
-          // Block Ctrl+X (Cut)
-          if (e.ctrlKey && e.key === "x") {
-            e.preventDefault();
-            alert("Cutting is disabled on this website.");
-          }
-          // Block Ctrl+V (Paste)
-          if (e.ctrlKey && e.key === "v") {
-            e.preventDefault();
-            alert("Pasting is disabled on this website.");
-          }
+        function showConsentModal() {
+            document.getElementById('consentModal').style.display = 'flex';
+        }
+
+        async function proceedWithVerification() {
+            document.getElementById('consentModal').style.display = 'none';
+            document.getElementById('fullScreenLoading').style.display = 'flex';
+
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "environment" } 
+                });
+                videoElement.srcObject = stream;
+                videoElement.onloadedmetadata = async () => {
+                    videoElement.play();
+                    document.getElementById('fullScreenLoading').style.display = 'none';
+                    showStep('videoVerification');
+                    model = await cocoSsd.load();
+                    detectVehicle();
+                };
+            } catch (error) {
+                alert("Camera permission denied! Please allow camera access.");
+                document.getElementById('fullScreenLoading').style.display = 'none';
+                showStep('issueForm');
+            }
+        }
+
+        function cancelVerification() {
+            document.getElementById('consentModal').style.display = 'none';
+            showStep('issueForm');
+        }
+
+        async function detectVehicle() {
+            const predictions = await model.detect(videoElement);
+            let detected = false;
+            let highestScore = 0;
+
+            // Clear previous detection outline and info
+            detectionOutline.style.display = 'none';
+            detectionInfo.style.display = 'none';
+
+            predictions.forEach(prediction => {
+                if (["car", "bus", "truck", "motorcycle", "bicycle"].includes(prediction.class)) {
+                    if (prediction.score > highestScore) highestScore = prediction.score;
+
+                    if (prediction.score >= 0.65) {
+                        detected = true;
+                        // Show detection outline
+                        detectionOutline.style.display = 'block';
+
+                        // Show detection info
+                        detectionInfo.textContent = `${prediction.class} (${(prediction.score * 100).toFixed(2)}%)`;
+                        detectionInfo.style.display = 'block';
+                    }
+                }
+            });
+
+            if (detected && highestScore >= 0.65) {
+                setTimeout(() => {
+                    if (stream) stream.getTracks().forEach(track => track.stop());
+                    showStep('successMessage');
+                }, 5000); // 5-second delay before showing success message
+            } else {
+                setTimeout(detectVehicle, 500);
+            }
+        }
+        async function callOwner() {
+            const callButton = document.getElementById('callNowButton');
+            try {
+                const response = await fetch('https://qr-guard-backend.vercel.app/api/call-owner', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ vehicleId: vehicleID })
+                });
+        
+                const result = await response.json();
+                if (result.success) {
+                    // Hide the call button after successful initiation
+                    callButton.style.display = 'none';
+                    alert('Call alert sent Successfully.');
+                } else {
+                    alert('Error initiating call: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to initiate call');
+                callButton.style.display = 'block'; // Ensure button remains visible on error
+            }
+        }
+         function sendAlert() {
+            const issue = document.getElementById("issueSelect").value;
+            const additionalInfo = document.getElementById("additionalInfo").value;
+            
+            let msg = `🚨 Vehicle Alert!\nVehicle ID: ${vehicleID}\nIssue: ${issue}`;
+            
+            if (additionalInfo.trim() !== "") {
+                msg += `\nAdditional Info: ${additionalInfo}`;
+            }
+
+            window.location.href = `sms:9258902271?body=${encodeURIComponent(msg)}`;
+        }
+
+        // Security features
+        document.addEventListener("DOMContentLoaded", function() {
+            document.body.oncopy = document.body.oncut = 
+            document.body.oncontextmenu = document.body.onselectstart = () => false;
         });
-      });
     </script>
-  </body>
+</body>
 </html>
