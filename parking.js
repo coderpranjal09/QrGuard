@@ -60,5 +60,17 @@ const parkingPartners = [
     operator: "QR Guard Technologies",
     address: "Near Main F Block Building",
     rateUnit: "per hour"
+},
+   {
+    id: 6,
+    name: " Utu Parking",
+    coordinates: [30.343202, 77.939802],
+    slots: 50,
+    available: 30,
+    normalRate: 50,
+    qrGuardDiscount: 20,
+    operator: "QR Guard Technologies",
+    address: "Near Main Building",
+    rateUnit: "per hour"
 }
 ];
